@@ -1,26 +1,27 @@
-//!========== these are the routes that are reached by admin
+//!  ================== imports starts ================== 
 const path = require("path");
 const rootDir = require("../util/path");
-/*
-it's like a mini express app tied to other express app 
-*/
+const adminData = require("../routes/admin");
+//!  ================== imports end =====================
+
 const express = require("express");
 const router = express.Router();
 
 router.get("/", (req, res, next) => {
-    /*res.send("<h1>hello from express</h1>")
-    path -> "/views/shop.html" (incorrect)
-    absolute path is correct but 
-    "/" -> refers to the root folder on our operating system
-    so we use path --> concatenate different segments
-    __dirname --> holds absolute path on the operating system
-    it builds the path for linux(ex: /views/shop.html) & 
-    for windows(ex: "\views\shop.html")
-    ---------------
-    __dirname -> refers to routes folder
-    views -> is a sibling folder so we use "../"
+    console.log(adminData.products, "shop.js");
+    const products = adminData.products;
+    //res.sendFile(path.join(rootDir, "views", "shop.html"))
+    /*
+    render method -> it uses default templating engine 
+    shop-> shop.pug
     */
-    res.sendFile(path.join(rootDir, "views", "shop.html"))
+    res.render("shop", {
+        prods: products,
+        docTitle: "Shop",
+        path: "/"
+    }
+    );
 });
-
 module.exports = router;
+
+// 2:27
