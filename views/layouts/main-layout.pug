@@ -5,7 +5,8 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title #{pageTitle}
         link(rel="stylesheet", href="/css/main.css")
-        block styles
+        //- using styles so the style can be used in views that extend this layout 
+        block styles 
     body 
         header.main-header 
             nav.main-header__nav 

@@ -18,10 +18,12 @@ router.get("/", (req, res, next) => {
     res.render("shop", {
         prods: products,
         docTitle: "Shop",
-        path: "/"
+        path: "/",
+        activeShop: true,
+        hasProducts: products.length > 0,
+        productCss: true,
+        //layout: false --> use default layout or not using it
     }
     );
 });
 module.exports = router;
-
-// 2:27

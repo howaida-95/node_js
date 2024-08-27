@@ -1,0 +1,33 @@
+
+  <body>
+    <main>
+      {{!-- we can't use --> prods.length > 0 here --> but instead passing it as true or false from node code --}}
+      {{#if hasProducts }}
+        <div class="grid">
+          {{#each prods}}
+          <article class="card product-item">
+            <header class="card__header">
+              <h1 class="product__title">{{this.title}}</h1>
+            </header>
+
+            <div class="card__image">
+              <img src="https://picsum.photos/200/300" alt="image">
+            </div>
+
+            <div class="card__content">
+                <h2 class="product__price">$19.99</h2>
+                <p class="product__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+
+            <div class="card__actions">
+                <button class="btn">Add to Card</button>
+            </div>
+          </article>
+          {{/each}}
+        </div>
+
+      {{else}}
+        <h1>No products found</h1>
+      {{/if}}
+    </main>
+  </body>
