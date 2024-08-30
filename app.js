@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const adminData = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
-const expressHbs = require("express-handlebars");
+//const expressHbs = require("express-handlebars");
 //!  ================== imports end ===================== 
 
 const app = express();
@@ -17,13 +17,13 @@ note
 ----
 extension name by default handlebars --> we can change that by using extname
 */
-console.log(expressHbs);
-app.engine("handlebars", expressHbs.engine({ defaultLayout: 'main-layout' })); // engine name -> template engine func to initialize it
+//app.engine("handlebars", expressHbs.engine({ defaultLayout: 'main-layout' })); // engine name -> template engine func to initialize it
 
 // set a global config value 
-app.set("view engine", "handlebars");
-
+//app.set("view engine", "handlebars");
 //app.set("view engine", "pug");
+
+app.set("view engine", "ejs");
 // tell express where to find views
 app.set("views", "views");
 
