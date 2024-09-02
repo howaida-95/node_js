@@ -1,29 +1,16 @@
 //!========== imports start ===================
 const path = require("path");
-const rootDir = require("../util/path");
 const bodyParser = require("body-parser");
 const express = require("express");
+const productsController = require("../controllers/products");
 const router = express.Router();
-const products = [];
-//!========== imports end ===================
+//!========== imports end =====================
 
 // admin/add-product ==> GET
-router.get("/add-product", (req, res, next) => {
-    res.render("add-product", {
-        pageTitle: "add product",
-        path: "admin/add-product",
-        activeAddProduct: true,
-        productCSS: true,
-        formsCSS: true
-    });
-});
+router.get("/add-product", productsController.getAddProduct);
 
 // admin/add-product ==> POST
-router.post("/add-product", (req, res, next) => {
-    products.push({ title: req.body.title });
-    res.redirect("/");
-});
+router.post("/add-product", productsController.postAddProduct);
 
-//module.exports = router;
-exports.routes = router;
-exports.products = products;
+module.exports = router;
+//exports.routes = router;

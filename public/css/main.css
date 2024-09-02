@@ -56,10 +56,26 @@ main {
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: stretch;
+  gap: 4px;
 }
 
 .card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  width: 25%;
+}
+
+.card__image {
+  position: relative;
+  width: 100%; /* Make the container's width responsive */
+  padding-top: 100%; /* Create a square container */
+}
+
+.card__image img {
+  position: absolute;
+  inset: 0;
+  object-fit: cover; /* Fill the container while cropping excess */
+  width: 100%; /* Fill the width of the container */
+  height: 100%; /* Fill the height of the container */
 }
 
 .card__header,
