@@ -1,4 +1,4 @@
-const products = [];
+const Product = require("../models/product");
 
 // this is what we do --> get add product page 
 exports.getAddProduct = (req, res, next) => {
@@ -13,12 +13,17 @@ exports.getAddProduct = (req, res, next) => {
 
 // adding a new product 
 exports.postAddProduct = (req, res, next) => {
-    products.push({ title: req.body.title });
+    // create an object based on the class blueprint
+    const product = new Product(req.body.title);
+    // save the product 
+    product.save();
     res.redirect("/");
 }
 
 // get all products
 exports.getProducts = (req, res, next) => {
+    // fetch products
+    const products = Product.fetchAll();
     res.render("shop", { // render the view
         prods: products,
         pageTitle: "Shop",
