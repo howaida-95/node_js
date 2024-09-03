@@ -32,24 +32,27 @@ module.exports = class Product {
             }
             // this refers to the class in case arrow function
             products.push(this);
+            console.log(this, "this--------")
             // write in the same path we read from , convert into json using JSON.stringify
             fs.writeFile(p, JSON.stringify(products), err => {
                 console.log(err, "err")
             });
         });
     }
-
-    // retrieve product from this array
-    // static --> to call this method inside the class itself 
-    static fetchAll() {
+    /*
+        retrieve product from this array
+        static --> to call this method inside the class itself 
+        cb --> callback allow to pass a func that fetchAll will execute once its done
+        so calling fetchAll can pass a func then called returning the data 
+    */
+    static fetchAll(cb) {
         const p = path.join(path.dirname(require.main.filename), "data", "products.json");
         fs.readFile(p, (err, fileContent) => {
             if (err) {
-                return [];
+                cb([]);
             }
-            return JSON.parse(fileContent);
+            cb(JSON.parse(fileContent));
         })
-        return
     }
 }
 // call constructor with new & pass params to it 

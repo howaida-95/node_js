@@ -23,15 +23,18 @@ exports.postAddProduct = (req, res, next) => {
 // get all products
 exports.getProducts = (req, res, next) => {
     // fetch products
-    const products = Product.fetchAll();
-    res.render("shop", { // render the view
-        prods: products,
-        pageTitle: "Shop",
-        path: "/",
-        activeShop: true,
-        hasProducts: products.length > 0,
-        productCss: true,
-        //layout: false --> use default layout or not using it
-    }
-    );
+    Product.fetchAll((products) => {
+        // render when fetchAll is done
+        res.render("shop", { // render the view
+            prods: products,
+            pageTitle: "Shop",
+            path: "/",
+            activeShop: true,
+            hasProducts: products.length > 0,
+            productCss: true,
+            //layout: false --> use default layout or not using it
+        }
+        );
+    });
+
 }
