@@ -2,7 +2,7 @@ const Product = require("../models/product");
 
 // this is what we do --> get add product page 
 exports.getAddProduct = (req, res, next) => {
-    res.render("add-product", {// render view 
+    res.render("admin/add-product", {// render view 
         pageTitle: "add product",
         path: "admin/add-product",
         activeAddProduct: true,
@@ -25,7 +25,7 @@ exports.getProducts = (req, res, next) => {
     // fetch products
     Product.fetchAll((products) => {
         // render when fetchAll is done
-        res.render("shop", { // render the view
+        res.render("shop/product-list", { // render the view
             prods: products,
             pageTitle: "Shop",
             path: "/",
