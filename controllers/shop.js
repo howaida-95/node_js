@@ -15,6 +15,25 @@ exports.getProducts = (req, res, next) => {
     });
 }
 
+// get single product
+exports.getProduct = (req, res, next) => {
+    // get id
+    // param name productId --> the same used in router
+    const prodId = req.params.productId;
+    console.log(req.params, "req.paramsreq.params", prodId);
+    res.redirect("/");
+    // fetch products
+    // Product.fetchAll((products) => {
+    //     // render when fetchAll is done
+    //     res.render("shop/product-detail", { // render the view
+    //         path: "/products/:productId",
+    //         pageTitle: "Product",
+    //         prods: products,
+    //     }
+    //     );
+    // });
+}
+
 exports.getIndex = (req, res, next) => {
     // fetch products
     Product.fetchAll((products) => {
@@ -53,3 +72,4 @@ exports.getCheckout = (req, res, next) => {
     }
     );
 }
+

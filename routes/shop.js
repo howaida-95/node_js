@@ -7,7 +7,10 @@ const router = express.Router();
 
 router.get("/", shopController.getIndex);
 router.get("/products", shopController.getProducts);
-// single product 
+// single product --> variable segment
+// note -> order matters specific route comes before dynamic route
+router.get("/products/:productId", shopController.getProduct);
+
 router.get("/cart", shopController.getCart);
 router.get("/checkout", shopController.getCheckout);
 router.get("/orders", shopController.getOrders);
