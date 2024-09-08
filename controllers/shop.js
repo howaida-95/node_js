@@ -52,6 +52,15 @@ exports.getCart = (req, res, next) => {
     );
 }
 
+
+exports.postCart = (req, res, next) => {
+    // get product id from request body 
+    const prodId = req.body.productId;
+    // fetch product 
+    console.log(prodId, "prodIdprodId")
+    res.redirect("/cart")
+}
+
 exports.getOrders = (req, res, next) => {
     res.render("shop/orders", { // render the view
         path: "/orders",

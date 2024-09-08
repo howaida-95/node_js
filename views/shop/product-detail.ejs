@@ -11,8 +11,11 @@
             </div>
             <h2>$ <%= product.price %></h2>
             <p><%= product.description %></p>
-            <form action="/cart" method="post">
-                <button class="btn" type="submit">add to cart</button>
-            </form>
+            <!-- 
+                we can do it by 2 ways:
+                -> send as body req in post req
+                -> send as dynamic segment /cart/id
+             -->
+             <%- include("../includes/add-to-cart.ejs", {product: product}) %>
         </main>
         <%- include('../includes/end.ejs') %>
