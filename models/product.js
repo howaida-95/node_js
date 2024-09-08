@@ -29,6 +29,8 @@ module.exports = class Product {
     // this --> refer to the object created based on the class
     // save it to a file 
     save() {
+        // add id to the product object 
+        this.id = Math.random().toString();
         getProductsFromFile((products) => {
             products.push(this); // append new product 
             console.log(this, "this--------")
