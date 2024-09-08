@@ -20,18 +20,15 @@ exports.getProduct = (req, res, next) => {
     // get id
     // param name productId --> the same used in router
     const prodId = req.params.productId;
-    console.log(req.params, "req.paramsreq.params", prodId);
-    res.redirect("/");
-    // fetch products
-    // Product.fetchAll((products) => {
-    //     // render when fetchAll is done
-    //     res.render("shop/product-detail", { // render the view
-    //         path: "/products/:productId",
-    //         pageTitle: "Product",
-    //         prods: products,
-    //     }
-    //     );
-    // });
+    // console.log(req.params, "req.paramsreq.params", prodId);
+    Product.findById(prodId, (product) => {
+        res.render("shop/product-detail", {
+            path: "/products/:productId",
+            pageTitle: "Product",
+            prod: product,
+        }
+        );
+    })
 }
 
 exports.getIndex = (req, res, next) => {
