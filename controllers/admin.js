@@ -20,6 +20,19 @@ exports.postAddProduct = (req, res, next) => {
     product.save();
     res.redirect("/");
 }
+// edit product 
+exports.getEditProduct = (req, res, next) => {
+    // query param --> ?key=value & key=value 
+    const editMode = req.query.edit; // extracted query value is always string
+    if (!editMode) {
+        return res.redirect("/");
+    }
+    res.render("admin/edit-product", {// render view 
+        path: "/admin/edit-product",
+        pageTitle: "Edit Product",
+        editing: editMode
+    });
+}
 
 // adding a new product 
 exports.getProducts = (req, res, next) => {
