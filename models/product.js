@@ -19,7 +19,8 @@ const getProductsFromFile = (cb) => {
 // -> creating class 
 module.exports = class Product {
     // define a shape of product 
-    constructor(title, imageUrl, price, description) {
+    constructor(id, title, imageUrl, price, description) {
+        this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
         this.price = price;
@@ -28,7 +29,21 @@ module.exports = class Product {
 
     // this --> refer to the object created based on the class
     // save it to a file 
+    // use save for add & edit 
     save() {
+        if (this.id) {
+            // update the existing product
+            //1.find the product 
+            getProductsFromFile((products) => {
+                const existingProductIndex = products.findIndex(prod => prod.id === this.id);
+                //2.replace the product
+                const updatedProducts = [...products];
+                updatedProducts[existingProductIndex] = this;
+                fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+                    console.log(err, "err updatedProducts")
+                });
+            })
+        }
         // add id to the product object 
         this.id = Math.random().toString();
         getProductsFromFile((products) => {
