@@ -41,6 +41,9 @@ exports.getEditProduct = (req, res, next) => {
         });
     })
 }
+exports.postEditProduct = (req, res, next) => {
+
+}
 
 // adding a new product 
 exports.getProducts = (req, res, next) => {
