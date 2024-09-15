@@ -4,7 +4,7 @@ const path = require("path");
 // -> creating constructor function
 // module.exports = function Product(){
 // }
-
+const Cart = require("./cart");
 const p = path.join(path.dirname(require.main.filename), "data", "products.json");
 const getProductsFromFile = (cb) => {
     fs.readFile(p, (err, fileContent) => {
@@ -55,6 +55,20 @@ module.exports = class Product {
             });
         })
     }
+
+    // delete 
+    static deleteById(id) {
+        getProductsFromFile((products) => {
+            const product = products.find(prod => prod.id == id);
+            const updatedProducts = products.filter(prod => prod.id !== id);
+            fs.writeFile(p, JSON.stringify(updatedProducts));
+            if (!err) {
+                Cart.deleteProduct(id, product.price);
+            }
+            cb(product);
+        })
+    }
+
     /*
         retrieve product from this array
         static --> to call this method inside the class itself 
@@ -71,5 +85,7 @@ module.exports = class Product {
             cb(product);
         });
     }
+
+
 }
 // call constructor with new & pass params to it 

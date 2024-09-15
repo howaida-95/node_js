@@ -6,6 +6,7 @@ const adminController = require("../controllers/admin");
 const router = express.Router();
 //!========== imports end =====================
 
+router.get("/products", adminController.getProducts);
 // admin/add-product ==> GET
 router.get("/add-product", adminController.getAddProduct);
 // admin/add-product ==> POST
@@ -15,7 +16,7 @@ router.get("/edit-product/:productId", adminController.getEditProduct)
 // no dynamic segment because it's gonna be sent to 
 router.post("/edit-product", adminController.postEditProduct);
 
-router.get("/products", adminController.getProducts);
+router.post("/delete-product", adminController.postDeleteProduct);
 
 module.exports = router;
 //exports.routes = router;

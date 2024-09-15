@@ -21,6 +21,7 @@ exports.postAddProduct = (req, res, next) => {
     product.save();
     res.redirect("/");
 }
+
 // edit product 
 exports.getEditProduct = (req, res, next) => {
     // query param --> ?key=value & key=value 
@@ -65,3 +66,10 @@ exports.getProducts = (req, res, next) => {
         });
     })
 }
+
+exports.postDeleteProduct = (req, res, next) => {
+    const prodId = req.body.productId;
+    
+}
+// carts
+//5:12

@@ -11,7 +11,7 @@ module.exports = class Cart {
     //     this.totalPrice = 0; // increase with every product we add 
     // }
 
-    // a way to add & remove products 
+    // add product to cart 
     static addProduct(id, productPrice) {
         // fetch the previous cart 
         fs.readFile(p, (err, fileContent) => {
@@ -43,6 +43,27 @@ module.exports = class Cart {
             });
         })
         // add new product or increase the quantity     
+    }
+
+    // remove product from cart 
+    static deleteProduct(id, productPrice) {
+        // get my cart (by reading the file)
+        fs.readFile(p, (err, fileContent) => {
+            if (err) {
+                return;
+            }
+            // update cart 
+            const updatedCart = { ...fileContent };
+            // quantity of product
+            const product = updatedCart.products.find((prod) => prod.id === id);
+            const productQty = product.qty;
+            updatedCart.products = updatedCart.products.filter(prod => prod.id !== id);
+            updatedCart.totalPrice = updatedCart.totalPrice - (productPrice * productQty);
+            fs.writeFile(p, JSON.stringify(updatedCart), (err) => {
+                console.log(err, "error");
+            });
+        })
+
     }
 }
 
