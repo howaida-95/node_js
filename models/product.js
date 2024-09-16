@@ -59,13 +59,14 @@ module.exports = class Product {
     // delete 
     static deleteById(id) {
         getProductsFromFile((products) => {
+            console.log(products, id, "hellllllllllllllo");
             const product = products.find(prod => prod.id == id);
             const updatedProducts = products.filter(prod => prod.id !== id);
-            fs.writeFile(p, JSON.stringify(updatedProducts));
-            if (!err) {
-                Cart.deleteProduct(id, product.price);
-            }
-            cb(product);
+            fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+                if (!err) {
+                    Cart.deleteProduct(id, product?.price);
+                }
+            });
         })
     }
 
@@ -85,7 +86,6 @@ module.exports = class Product {
             cb(product);
         });
     }
-
 
 }
 // call constructor with new & pass params to it 

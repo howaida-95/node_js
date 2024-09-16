@@ -3,7 +3,7 @@ const Product = require("../models/product");
 // this is what we do --> get add product page 
 exports.getAddProduct = (req, res, next) => {
     res.render("admin/add-product", {// render view 
-        path: "admin/add-product",
+        path: "/admin/add-product",
         pageTitle: "add product",
         editing: false
     });
@@ -69,7 +69,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId;
-    
+    console.log(req.body, "prodIdprodId")
+    Product.deleteById(prodId);
+    res.redirect("/admin/products")
 }
-// carts
-//5:12
