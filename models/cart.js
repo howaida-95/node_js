@@ -1,3 +1,4 @@
+const { json } = require("body-parser");
 const fs = require("fs");
 const path = require("path");
 
@@ -5,7 +6,7 @@ const p = path.join(path.dirname(require.main.filename), "data", "cart.json");
 
 // -> creating class 
 module.exports = class Cart {
-    // // define a shape of cart
+    // define a shape of cart
     // constructor(title, imageUrl, price, description) {
     //     this.products = [];
     //     this.totalPrice = 0; // increase with every product we add 
@@ -65,6 +66,16 @@ module.exports = class Cart {
         })
     }
 
-
+    // get products from cart 
+    static getCart(cb) {
+        fs.readFile(p, (err, fileContent) => {
+            const cart = JSON.parse(fileContent);
+            if (err) {
+                cb(null);
+            }
+            cb(cart);
+        })
+    }
+    
 }
 
