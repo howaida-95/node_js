@@ -77,6 +77,15 @@ exports.postCart = (req, res, next) => {
     res.redirect("/cart");
 }
 
+exports.postCartDeleteProduct = (req, res, next) => {
+    // remove the item from the cart not the products itself
+    const prodId = req.body.productId;
+    // get the product info first --> so we can get the price
+    Product.findById(prodId, (product) => {
+        Cart.deleteProduct(prodId, product.price);
+        res.redirect("/cart"); // redirection after success of deletion
+    })
+}
 exports.getOrders = (req, res, next) => {
     res.render("shop/orders", { // render the view
         path: "/orders",
