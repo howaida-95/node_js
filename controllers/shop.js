@@ -5,15 +5,15 @@ const Cart = require("../models/cart");
 // get all products
 exports.getProducts = (req, res, next) => {
     // fetch products
-    Product.fetchAll((products) => {
+    Product.fetchAll().then(([rows, fieldData]) => {
         // render when fetchAll is done
         res.render("shop/product-list", { // render the view
             path: "/products",
             pageTitle: "All Products",
-            prods: products,
+            prods: rows,
         }
         );
-    });
+    }).catch(err => console.log(err));
 }
 
 // get single product
@@ -22,27 +22,29 @@ exports.getProduct = (req, res, next) => {
     // param name productId --> the same used in router
     const prodId = req.params.productId;
     // console.log(req.params, "req.paramsreq.params", prodId);
-    Product.findById(prodId, (product) => {
+    Product.findById(prodId).then(([product]) => {
         res.render("shop/product-detail", {
             path: "/products",
             pageTitle: "Product",
-            product: product,
+            product: product[0],
         }
         );
+    }).catch((err) => {
+        console.log(err)
     })
 }
 
 exports.getIndex = (req, res, next) => {
     // fetch products
-    Product.fetchAll((products) => {
+    Product.fetchAll().then(([rows, fieldData]) => {
         // render when fetchAll is done
         res.render("shop/index", { // render the view
             path: "/",
             pageTitle: "Shop",
-            prods: products,
+            prods: rows,
         }
         );
-    });
+    }).catch(err => console.log(err));
 }
 
 exports.getCart = (req, res, next) => {
