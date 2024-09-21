@@ -16,11 +16,13 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    const product = new Product(null, title, imageUrl, price, description);
-    // save the product 
-    product.save().then(() => {
-        res.redirect("/");
-    }).catch((err) => {
+    // sequelize create method to create new element & store it to db (1 step)
+    // build does the same but create it in js first & then save it to database (2 steps)
+    Product.create({
+        title, imageUrl, price, description
+    }).then(result => {
+        console.log(result);
+    }).catch(err => {
         console.log(err)
     });
 }
@@ -71,8 +73,8 @@ exports.getProducts = (req, res, next) => {
 }
 
 exports.postDeleteProduct = (req, res, next) => {
+    // console.log(req.body, "prodIdprodId")
     const prodId = req.body.productId;
-    console.log(req.body, "prodIdprodId")
     Product.deleteById(prodId);
     res.redirect("/admin/products")
 }

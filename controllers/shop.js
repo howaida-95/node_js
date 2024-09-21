@@ -72,7 +72,6 @@ exports.postCart = (req, res, next) => {
     // get product id from request body 
     const prodId = req.body.productId;
     // fetch product 
-    console.log(prodId, "prodIdprodId")
     Product.findById(prodId, (product) => {
         Cart.addProduct(prodId, product.price)
     })
@@ -88,13 +87,13 @@ exports.postCartDeleteProduct = (req, res, next) => {
         res.redirect("/cart"); // redirection after success of deletion
     })
 }
+
 exports.getOrders = (req, res, next) => {
     res.render("shop/orders", { // render the view
         path: "/orders",
         pageTitle: "Your orders",
     }
     );
-
 }
 
 exports.getCheckout = (req, res, next) => {
@@ -105,4 +104,3 @@ exports.getCheckout = (req, res, next) => {
     }
     );
 }
-
