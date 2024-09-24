@@ -35,7 +35,8 @@ exports.getEditProduct = (req, res, next) => {
         return res.redirect("/");
     }
     const prodId = req.params.productId;
-    Product.findById(prodId, product => {
+
+    Product.findByPk(prodId).then((product) => {
         if (!product) {
             return res.redirect("/");
         }
@@ -45,20 +46,38 @@ exports.getEditProduct = (req, res, next) => {
             editing: editMode,
             product: product
         });
-    })
+    }).catch(err => console.log(err))
 }
 
 exports.postEditProduct = (req, res, next) => {
     // fetch info for the product 
-    const id = req.body.productId;
+    const prodId = req.body.productId;
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    const updatedProduct = new Product(id, title, imageUrl, price, description);
-    // save the product 
-    updatedProduct.save();
-    res.redirect("/admin/products");
+    // find the product by id 
+    Product.findByPk(prodId).then(product => {
+        /*
+        =>  that product now need to be updated
+        */
+        // 1.edit the product 
+        product.title = title;
+        product.price = price;
+        product.description = description;
+        product.imageUrl = imageUrl;
+        // 2. save it to the database
+        return product.save();
+    })
+        .then((result) => {
+            console.log(result)
+            res.redirect("/admin/products");
+        })
+        // this will catch error for 1st & 2nd promise
+        .catch(err => console.log(err))
+
+    // const updatedProduct = new Product(id, title, imageUrl, price, description);
+    // // save the product 
 }
 
 // adding a new product 
