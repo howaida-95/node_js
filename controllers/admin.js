@@ -63,13 +63,14 @@ exports.postEditProduct = (req, res, next) => {
 
 // adding a new product 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll(products => {
+    // then & catch because we use promises
+    Product.findAll().then((product) => {
         res.render("admin/products", {// render view 
             path: "/admin/products",
             pageTitle: "Admin products",
-            prods: products
+            prods: product
         });
-    })
+    }).catch((err) => { console.log(err) })
 }
 
 exports.postDeleteProduct = (req, res, next) => {
