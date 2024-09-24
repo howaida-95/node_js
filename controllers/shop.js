@@ -5,15 +5,16 @@ const Cart = require("../models/cart");
 // get all products
 exports.getProducts = (req, res, next) => {
     // fetch products
-    Product.fetchAll().then(([rows, fieldData]) => {
-        // render when fetchAll is done
+    Product.findAll().then((product) => {
         res.render("shop/product-list", { // render the view
             path: "/products",
             pageTitle: "All Products",
-            prods: rows,
+            prods: product,
         }
         );
-    }).catch(err => console.log(err));
+    }).catch((err) => {
+        console.log(err)
+    });
 }
 
 // get single product
@@ -22,29 +23,46 @@ exports.getProduct = (req, res, next) => {
     // param name productId --> the same used in router
     const prodId = req.params.productId;
     // console.log(req.params, "req.paramsreq.params", prodId);
-    Product.findById(prodId).then(([product]) => {
+    Product.findByPk(prodId).then((product) => {
         res.render("shop/product-detail", {
             path: "/products",
             pageTitle: "Product",
+            product: product,
+        }
+        );
+    }).catch((err) => {
+        console.log(err);
+    })
+
+    /*
+        other way to do that by using 
+        findAll & where syntax
+        Product.findAll({where: {id: prodId}}).then(product=> {
+            res.render("shop/product-detail", {
+            path: "/products",
+            pageTitle: "Product",
             product: product[0],
+                }
+            })
+        .catch(err => console,log(err))
+    */
+}
+
+exports.getIndex = (req, res, next) => {
+    /*
+    ==> fetch products
+    findAll --> have where condition we can restrict the data we retrieve
+    */
+    Product.findAll().then((product) => {
+        res.render("shop/index", { // render the view
+            path: "/",
+            pageTitle: "Shop",
+            prods: product,
         }
         );
     }).catch((err) => {
         console.log(err)
-    })
-}
-
-exports.getIndex = (req, res, next) => {
-    // fetch products
-    Product.fetchAll().then(([rows, fieldData]) => {
-        // render when fetchAll is done
-        res.render("shop/index", { // render the view
-            path: "/",
-            pageTitle: "Shop",
-            prods: rows,
-        }
-        );
-    }).catch(err => console.log(err));
+    });
 }
 
 exports.getCart = (req, res, next) => {
