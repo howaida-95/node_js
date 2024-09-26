@@ -8,7 +8,9 @@ const errorController = require("./controllers/error");
 // the pool which allows us to use a connection in it
 const db = require("./util/database");
 const sequelize = require("./util/database");
-
+const Product = require("./models/product");
+const User = require("./models/user");
+const Cart = require("./models/cart");
 //!  ================== imports end ===================== 
 
 const app = express();
@@ -25,12 +27,30 @@ app.use(shopRoutes);
 
 //* -------------- handling not found routers (404 error page)
 app.use(errorController.get404);
-sequelize.sync().then(result => {
+
+//1.define models before syncing data to database
+Product.belongsTo(User, {
+    // here we define how this relationship is managed
+    constraints: true,
+    // if user is deleted what happens to any connected product
+    /* 
+        cascade -> means deletion will be executed to product too
+        if we delete the user -> we delete any price related to the user too
+    */
+    onDelete: "CASCADE",
+});
+// -> apply the inverse -> one user can have many products
+User.hasMany(Product);
+
+
+// 2.sync  data to db
+sequelize.sync({ force: true }).then(result => {
     //console.log(result);
     app.listen(3000);
 }).catch(err => {
     console.log(err);
 });
+
 /* 
 make sure that all models transferred into tables
 whenever we start our application
