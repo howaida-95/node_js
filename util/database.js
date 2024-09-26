@@ -12,8 +12,8 @@ const Sequelize = require("sequelize");
 // db name, user name (by default root), password
 const sequelize = new Sequelize(
     "new_schema",
-    "root",
-    "1751995",
+    "root",// default user
+    "1751995", // password
     { dialect: "mysql", host: "localhost" }
 );
 
