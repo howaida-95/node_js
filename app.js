@@ -25,6 +25,16 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
+// for incoming request, we will execute this function
+app.use((req, res, next) => {
+    User.findByPk(1).then((user) => {
+        // store sequelized  user that is retrieved from database in req
+        req.user = user;
+        next();
+    }).catch((err) => {
+        console.log(err);
+    });
+})
 //* -------------- handling not found routers (404 error page)
 app.use(errorController.get404);
 
@@ -42,14 +52,24 @@ Product.belongsTo(User, {
 // -> apply the inverse -> one user can have many products
 User.hasMany(Product);
 
-
 // 2.sync  data to db
-sequelize.sync({ force: true }).then(result => {
-    //console.log(result);
-    app.listen(3000);
-}).catch(err => {
-    console.log(err);
-});
+// sequelize.sync({ force: true })
+sequelize.sync()
+    .then(result => {
+        // once the product is created 
+        app.listen(3000);
+        return User.findByPk(1);
+        //console.log(result);
+    })
+    .then((user) => {
+        if (!user) {
+            return User.create({ name: "Howaida", email: "howaida@gmail.com" });
+        }
+        return user;
+    })
+    .catch(err => {
+        console.log(err);
+    });
 
 /* 
 make sure that all models transferred into tables
