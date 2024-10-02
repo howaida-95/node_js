@@ -12,21 +12,39 @@ exports.getAddProduct = (req, res, next) => {
 // adding a new product 
 exports.postAddProduct = (req, res, next) => {
     // create an object based on the class blueprint
+    console.log("====================");
+    console.log(req.user);
+    console.log("====================");
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    // sequelize create method to create new element & store it to db (1 step)
-    // build does the same but create it in js first & then save it to database (2 steps)
-    Product.create({
-        title, imageUrl, price, description
+    /* 
+        create a new associated object
+        since a user has many products
+        ==> this automatically creates a connected model
+    */
+    req.user.createProduct({
+        title: title,
+        imageUrl: imageUrl,
+        price: price,
+        description: description,
     }).then(result => {
         console.log(result);
     }).catch(err => {
         console.log(err)
     });
-}
 
+    // sequelize create method to create new element & store it to db (1 step)
+    // build does the same but create it in js first & then save it to database (2 steps)
+    //Product.create({
+    //title: title,
+    //imageUrl: imageUrl,
+    //price: price,
+    //description: description,
+    //userId: req.user.id // create a product with a user associate to it (here's manually)
+    //})
+}
 // edit product 
 exports.getEditProduct = (req, res, next) => {
     // query param --> ?key=value & key=value 

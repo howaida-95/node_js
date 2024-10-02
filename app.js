@@ -22,9 +22,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 //* -------------- route handling middleware (the order matters)
-app.use("/admin", adminRoutes);
-app.use(shopRoutes);
-
 // for incoming request, we will execute this function
 app.use((req, res, next) => {
     User.findByPk(1).then((user) => {
@@ -35,6 +32,10 @@ app.use((req, res, next) => {
         console.log(err);
     });
 })
+
+app.use("/admin", adminRoutes);
+app.use(shopRoutes);
+
 //* -------------- handling not found routers (404 error page)
 app.use(errorController.get404);
 
@@ -43,7 +44,7 @@ Product.belongsTo(User, {
     // here we define how this relationship is managed
     constraints: true,
     // if user is deleted what happens to any connected product
-    /* 
+    /*
         cascade -> means deletion will be executed to product too
         if we delete the user -> we delete any price related to the user too
     */
