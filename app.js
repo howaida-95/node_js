@@ -11,6 +11,8 @@ const sequelize = require("./util/database");
 const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
+
 //!  ================== imports end ===================== 
 
 const app = express();
@@ -52,10 +54,17 @@ Product.belongsTo(User, {
 });
 // -> apply the inverse -> one user can have many products
 User.hasMany(Product);
+User.hasOne(Cart);
+// inverse of hasOne relation (optional, can be ignored)
+Cart.belongsTo(User);
+// because one cart can hold multiple products
+// and single product can be part of multiple carts
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 // 2.sync  data to db
-// sequelize.sync({ force: true })
-sequelize.sync()
+sequelize.sync({ force: true })
+    //sequelize.sync()
     .then(result => {
         // once the product is created 
         app.listen(3000);
