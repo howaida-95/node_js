@@ -63,13 +63,10 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
 // 2.sync  data to db
-sequelize.sync({ force: true })
+sequelize.sync()
     //sequelize.sync()
-    .then(result => {
-        // once the product is created 
-        app.listen(3000);
-        return User.findByPk(1);
-        //console.log(result);
+    .then(() => {
+        return User.findByPk(1);  // Find user or create if it doesn't exist
     })
     .then((user) => {
         if (!user) {
@@ -77,11 +74,18 @@ sequelize.sync({ force: true })
         }
         return user;
     })
+    .then(user => {
+        return user.createCart();
+        //console.log(result);
+    })
+    .then((cart) => {
+        // once the cart is created 
+        app.listen(3000);
+    })
     .catch(err => {
         console.log(err);
     });
-
-/* 
+/*
 make sure that all models transferred into tables
 whenever we start our application
 -> sync: used to sync models to database by creating tables & relations
