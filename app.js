@@ -12,7 +12,6 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
-
 //!  ================== imports end ===================== 
 
 const app = express();
@@ -59,7 +58,7 @@ User.hasOne(Cart);
 Cart.belongsTo(User);
 // because one cart can hold multiple products
 // and single product can be part of multiple carts
-Cart.belongsToMany(Product, { through: CartItem });
+Cart.belongsToMany(Product, { through: CartItem }); // through -> to tell sequelize which model to use as in between model
 Product.belongsToMany(Cart, { through: CartItem });
 
 // 2.sync  data to db
