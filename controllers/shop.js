@@ -121,11 +121,24 @@ exports.postCart = (req, res, next) => {
 exports.postCartDeleteProduct = (req, res, next) => {
     // remove the item from the cart not the products itself
     const prodId = req.body.productId;
-    // get the product info first --> so we can get the price
-    Product.findById(prodId, (product) => {
-        Cart.deleteProduct(prodId, product.price);
-        res.redirect("/cart"); // redirection after success of deletion
+    req.user.getCart().then((cart) => {
+        // find the product with that productId
+        return cart.getProducts({ where: { id: prodId } })
     })
+        .then((products) => {
+            const product = products[0];
+            /*
+            destroy that product not on the products table 
+            but in that in-between cart-item
+            */
+            return product.cartItem.destroy();
+        })
+        .then((result) => {
+            res.redirect("/cart"); // redirection after success of deletion
+        })
+        .catch((err) => {
+            console.log(err);
+        })
 }
 
 exports.getOrders = (req, res, next) => {
