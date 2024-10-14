@@ -12,6 +12,9 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
+
 //!  ================== imports end ===================== 
 
 const app = express();
@@ -40,6 +43,7 @@ app.use(shopRoutes);
 //* -------------- handling not found routers (404 error page)
 app.use(errorController.get404);
 
+//* ------------------------------------- start product model ----------------------------
 //1.define models before syncing data to database
 Product.belongsTo(User, {
     // here we define how this relationship is managed
@@ -53,17 +57,43 @@ Product.belongsTo(User, {
 });
 // -> apply the inverse -> one user can have many products
 User.hasMany(Product);
+//* ------------------------------------- end product model ----------------------------
+
+//& hasOne (one-to-one relationships) ------------> source model => target model (has pk)
+//& belongsTo (one-to-one relationships) -----------> source model(has pk) => target model
+//& hasMany (one-to-many relationships) ------------> source model => target model (has pk)
+//& belongsToMany (many-to-many relationships) --------> injunction table contain extra data & pk for both
+
+//* ------------------------------------- start cart model ----------------------------
+//^ --> cart & user
 User.hasOne(Cart);
 // inverse of hasOne relation (optional, can be ignored)
 Cart.belongsTo(User);
 // because one cart can hold multiple products
 // and single product can be part of multiple carts
-Cart.belongsToMany(Product, { through: CartItem }); // through -> to tell sequelize which model to use as in between model
+// through -> to tell sequelize which model to use as in between model
+// This relationship requires an intermediary (junction) table to handle the connection between the two models. -->  have two foreign keys:
+//^ --> cart & product
+Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
+//* ------------------------------------- end cart model ----------------------------
+
+
+//* ------------------------------------- start order model ----------------------------
+//^ --> order & user
+// many to one
+Order.belongsTo(User);
+// one to many -> order table (target model) has userId reference the User who owns it ( foreign key )
+User.hasMany(Order);
+
+//^ --> order & products
+Order.belongsToMany(Product, { through: OrderItem });
+Product.belongsToMany(Order, { through: OrderItem });
+//* ------------------------------------- end order model ----------------------------
 
 // 2.sync  data to db
 sequelize.sync()
-    //sequelize.sync()
+    //sequelize.sync({ force: true })
     .then(() => {
         return User.findByPk(1);  // Find user or create if it doesn't exist
     })
