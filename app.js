@@ -14,7 +14,6 @@ const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
 const Order = require("./models/order");
 const OrderItem = require("./models/order-item");
-
 //!  ================== imports end ===================== 
 
 const app = express();
@@ -99,7 +98,7 @@ sequelize.sync()
     })
     .then((user) => {
         if (!user) {
-            return User.create({ name: "Howaida", email: "howaida@gmail.com" });
+            return User.create({ name: "Howaida", email: "howaidasayed95@gmail.com" });
         }
         return user;
     })

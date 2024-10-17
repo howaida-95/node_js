@@ -1,6 +1,7 @@
 // cart & checkout 
 const Product = require("../models/product");
 const Cart = require("../models/cart");
+const Order = require("../models/order");
 
 // get all products
 exports.getProducts = (req, res, next) => {
@@ -147,6 +148,39 @@ exports.getOrders = (req, res, next) => {
         pageTitle: "Your orders",
     }
     );
+}
+
+exports.postOrders = (req, res, next) => {
+    req.user.getCart()
+        .then(cart => {
+            // with access to the cart -> we have access to products in the cart
+            return cart.getProducts();
+        })
+        .then((products) => {
+            // create order associated with a user
+            req.user.createOrder()
+                .then(order => {
+                    return order.addProducts(products.map((product) => {
+                        /* each product has a special field */
+                        product.orderItem =
+                            {
+                                quantity: product.cartItem.quantity
+                            };
+                        return product;
+                    }));
+
+                })
+                .then(order => {
+                    res.redirect("/orders")
+                })
+                .catch(err => {
+                    console.log(err)
+                });
+            console.log(products, "hiiiiiii");
+        })
+        .catch(err => {
+            console.log(err)
+        });
 }
 
 exports.getCheckout = (req, res, next) => {
