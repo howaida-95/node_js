@@ -143,17 +143,27 @@ exports.postCartDeleteProduct = (req, res, next) => {
 }
 
 exports.getOrders = (req, res, next) => {
-    res.render("shop/orders", { // render the view
-        path: "/orders",
-        pageTitle: "Your orders",
-    }
-    );
+    // fetch all the orders & related products
+    // it works because there's a relation between orders & products
+    req.user.getOrders({ include: ["products"] })
+        .then((orders) => {
+            res.render("shop/orders", {
+                path: "/orders",
+                pageTitle: "Your orders",
+                orders: orders
+            }
+            );
+        }).catch((err) => {
+            console.log(err)
+        })
 }
 
 exports.postOrders = (req, res, next) => {
+    let fetchedCart;
     req.user.getCart()
         .then(cart => {
             // with access to the cart -> we have access to products in the cart
+            fetchedCart = cart;
             return cart.getProducts();
         })
         .then((products) => {
@@ -163,14 +173,16 @@ exports.postOrders = (req, res, next) => {
                     return order.addProducts(products.map((product) => {
                         /* each product has a special field */
                         product.orderItem =
-                            {
-                                quantity: product.cartItem.quantity
-                            };
+                        {
+                            quantity: product.cartItem.quantity
+                        };
                         return product;
                     }));
-
                 })
                 .then(order => {
+                    // drop all cart items
+                    return fetchedCart.setProducts(null)
+                }).then(() => {
                     res.redirect("/orders")
                 })
                 .catch(err => {
