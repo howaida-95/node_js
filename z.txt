@@ -1,0 +1,7 @@
+==> Sql database --> mysql 
+connect to sql by:
+1- sequelize
+1- mysql2
+
+==> NOSql database --> mongodb database 
+connect to mongo db by mongodb drive

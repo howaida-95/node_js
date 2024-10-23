@@ -188,7 +188,6 @@ exports.postOrders = (req, res, next) => {
                 .catch(err => {
                     console.log(err)
                 });
-            console.log(products, "hiiiiiii");
         })
         .catch(err => {
             console.log(err)

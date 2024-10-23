@@ -13,8 +13,3 @@ const CartItem = sequelize.define("cartItem", {
 })
 
 module.exports = CartItem;
-
-/* 
-cart should belong to a a single user 
-cart table should hold different carts for different users
-*/

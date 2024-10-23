@@ -1,20 +1,18 @@
-// const mysql = require("mysql2");
-// const pool = mysql.createPool({
-//     host: "localhost",
-//     user: "root",
-//     database: "new_schema",
-//     password: "1751995"
-// });
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient; // MongoClient used to connect mongodb 
 
-// module.exports = pool.promise();
+const mongoConnect = (callback) => {
+    MongoClient.connect("mongodb+srv://howaida:1751995@cluster0.awxto.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+        .then((client) => {
+            // client obj --> give me access to database
+            console.log(res, "res");
+            callback(client);
+        }).catch((err) => {
+            console.log(err, "err");
+        })
+}
+module.exports = mongoConnect;
 
-const Sequelize = require("sequelize");
-// db name, user name (by default root), password
-const sequelize = new Sequelize(
-    "new_schema",
-    "root",// default user
-    "1751995", // password
-    { dialect: "mysql", host: "localhost" }
-);
 
-module.exports = sequelize;
+
+
