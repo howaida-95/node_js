@@ -1,5 +1,9 @@
-const path = require('path');
+//! ------------------------- imports start --------------------
+const adminRoutes = require("./routes/admin");
 
+//! ------------------------- imports end ----------------------
+
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -14,10 +18,7 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-    
-
-});
+app.use("/admin", adminRoutes);
 
 app.use(errorController.get404);
 
