@@ -1,4 +1,5 @@
 const { getDb } = require("../util/database"); // allow to access to db connection 
+const mongodb = require("mongodb");
 
 class Product {
     constructor(title, price, imageUrl, description) {
@@ -8,7 +9,7 @@ class Product {
         this.description = description;
     }
 
-    //^ ======================== post products ========================
+    //^ ======================== post products ===========================
     // connect to mongo db & save product 
     save() {
         const db = getDb(); // return db instance we connected to
@@ -28,7 +29,7 @@ class Product {
             })
     }
 
-    //^ ======================== get products =========================
+    //^ ======================== get products ===============================
     static fetchAll() {
         const db = getDb();
         // find({title: "bla bla"}) --> can used for filtering
@@ -41,6 +42,20 @@ class Product {
             })
     }
 
+    //^ ======================== get single product =========================
+    static findById(prodId) {
+        const db = getDb(); // get access to db connection 
+        return db.collection("products")
+            .find({ _id: new mongodb.ObjectId(prodId) })// return all products that has this id (only one)
+            .next() // get the last document returned by find
+            .then(product => {
+                console.log(product, "product")
+                return product;
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
 }
 
 module.exports = Product;
