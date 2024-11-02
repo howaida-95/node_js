@@ -1,5 +1,6 @@
 //! ------------------------- imports start --------------------
 const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
 
 //! ------------------------- imports end ----------------------
 
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
     next();
 })
 app.use("/admin", adminRoutes);
+app.use(shopRoutes);
 
 app.use(errorController.get404);
 

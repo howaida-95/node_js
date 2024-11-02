@@ -8,6 +8,7 @@ class Product {
         this.description = description;
     }
 
+    //^ ======================== post products ========================
     // connect to mongo db & save product 
     save() {
         const db = getDb(); // return db instance we connected to
@@ -17,7 +18,6 @@ class Product {
         ------
         1.insertOne({}) --> insert one document (insert js obj -> but converted into json by mongodb)
         2.insertMany([]) --> insert many documents at once  (takes array of js objects)
-
         */
         return db.collection("products")
             .insertOne(this) // this --> refers to produce since we insert the product
@@ -27,6 +27,20 @@ class Product {
                 console.log(err)
             })
     }
+
+    //^ ======================== get products =========================
+    static fetchAll() {
+        const db = getDb();
+        // find({title: "bla bla"}) --> can used for filtering
+        return db.collection("products").find().toArray() // get all documents and turn them into array (later we're gonna use pagination)
+            .then((products) => {
+                console.log(products, "products")
+                return products;
+            }).catch((err) => {
+                console.log(err)
+            })
+    }
+
 }
 
 module.exports = Product;
