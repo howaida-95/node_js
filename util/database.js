@@ -10,13 +10,13 @@ let _db;
 
 const mongoConnect = (callback) => {
     MongoClient.connect(
-        "mongodb+srv://howaida:1751995@cluster0.awxto.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0"
+        "mongodb+srv://howaidasayed95:1751995@firstapi.7v1ba.mongodb.net/?retryWrites=true&w=majority&appName=firstapi"
     )
         .then((client) => {
             // client obj --> give me access to database
-            console.log(res, "res");
+            //console.log(res, "res");
             _db = client.db(); // store connection to db variable
-            callback(client);
+            callback();
         }).catch((err) => {
             console.log(err, "err");
             throw err;
