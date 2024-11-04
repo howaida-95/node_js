@@ -2,31 +2,42 @@ const { getDb } = require("../util/database"); // allow to access to db connecti
 const mongodb = require("mongodb");
 
 class Product {
-    constructor(title, price, imageUrl, description) {
+    constructor(title, price, imageUrl, description, id) {
         this.title = title;
         this.price = price;
         this.imageUrl = imageUrl;
         this.description = description;
+        this._id = id;
     }
 
     //^ ======================== post products ===========================
     // connect to mongo db & save product 
     save() {
-        const db = getDb(); // return db instance we connected to
-        /* tell mongodb in which collection you want to insert something 
-        if collection not exist yet, it will created once we insert data 
-        insert 
-        ------
-        1.insertOne({}) --> insert one document (insert js obj -> but converted into json by mongodb)
-        2.insertMany([]) --> insert many documents at once  (takes array of js objects)
+        /*
+            updateOne() - updateMany()
+            insertOne() - insertMany()
         */
-        return db.collection("products")
-            .insertOne(this) // this --> refers to produce since we insert the product
-            .then((result) => {
-                console.log(result, "result");
-            }).catch((err) => {
-                console.log(err)
-            })
+        const db = getDb();
+        let dbOp;
+        if (this._id) {
+            /* update the product 
+            updateOne -> takes 2 args:
+                1- filter ==> defines which element or document we want to update 
+                2- {$set: } ==> specify how to update that document
+            */
+            dbOp = db.collection("products").updateOne(
+                { _id: new mongodb.ObjectId(this._id) },
+                { $set: this }
+            );
+        } else {
+            return dbOp = db.collection("products")
+                .insertOne(this)
+        }
+        return dbOp.then((result) => {
+            console.log(result, "result");
+        }).catch((err) => {
+            console.log(err)
+        })
     }
 
     //^ ======================== get products ===============================
@@ -56,9 +67,6 @@ class Product {
                 console.log(err);
             });
     }
-
-
-
 }
 
 module.exports = Product;
