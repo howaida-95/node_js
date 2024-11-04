@@ -7,7 +7,7 @@ class Product {
         this.price = price;
         this.imageUrl = imageUrl;
         this.description = description;
-        this._id = id;
+        this._id = new mongodb.ObjectId(id);
     }
 
     //^ ======================== post products ===========================
@@ -26,7 +26,7 @@ class Product {
                 2- {$set: } ==> specify how to update that document
             */
             dbOp = db.collection("products").updateOne(
-                { _id: new mongodb.ObjectId(this._id) },
+                { _id: this._id },
                 { $set: this }
             );
         } else {
