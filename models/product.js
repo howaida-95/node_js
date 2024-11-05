@@ -7,7 +7,7 @@ class Product {
         this.price = price;
         this.imageUrl = imageUrl;
         this.description = description;
-        this._id = new mongodb.ObjectId(id);
+        this._id = id ? new mongodb.ObjectId(id) : null;
     }
 
     //^ ======================== post & edit products ===========================
@@ -25,12 +25,13 @@ class Product {
                 1- filter ==> defines which element or document we want to update 
                 2- {$set: } ==> specify how to update that document
             */
-            dbOp = db.collection("products").updateOne(
-                { _id: this._id },
-                { $set: this }
-            );
+            dbOp = db.collection("products")
+                .updateOne(
+                    { _id: this._id },
+                    { $set: this }
+                );
         } else {
-            return dbOp = db.collection("products")
+            dbOp = db.collection("products")
                 .insertOne(this)
         }
         return dbOp.then((result) => {
