@@ -10,7 +10,7 @@ class Product {
         this._id = new mongodb.ObjectId(id);
     }
 
-    //^ ======================== post products ===========================
+    //^ ======================== post & edit products ===========================
     // connect to mongo db & save product 
     save() {
         /*
@@ -67,6 +67,26 @@ class Product {
                 console.log(err);
             });
     }
+
+    //^ ======================== delete product =============================
+    static deleteById(prodId) {
+        const db = getDb();
+        /*
+            deleteOne
+            deleteMany
+        */
+        return db.collection("products").deleteOne({ _id: new mongodb.ObjectId(prodId) })
+            .then((result) => {
+                console.log(result, "result");
+            }).catch((err) => {
+                console.log(err)
+            })
+    }
 }
 
 module.exports = Product;
+/*
+    insertOne - insertMany 
+    updateOne - updateMany
+    deleteOne - deleteMany
+*/
