@@ -10,7 +10,7 @@ class Product {
         this._id = id ? new mongodb.ObjectId(id) : null;
     }
 
-    //^ ======================== post & edit products ===========================
+    //^ ======================== post & edit products =======================
     // connect to mongo db & save product 
     save() {
         /*
@@ -90,4 +90,5 @@ module.exports = Product;
     insertOne - insertMany 
     updateOne - updateMany
     deleteOne - deleteMany
+    findOne /find({_id: new mongodb.ObjectId(id)}) - find
 */
