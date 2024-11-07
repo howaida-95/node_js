@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const errorController = require('./controllers/error');
 const { mongoConnect } = require('./util/database');
 const User = require("./models/user");
+const mongodb = require("mongodb");
 //! ------------------------- imports end ----------------------
 
 const app = express();
@@ -26,7 +27,6 @@ app.use((req, res, next) => {
     }).catch((error) => {
         console.log(error)
     })
-    next();
 })
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);

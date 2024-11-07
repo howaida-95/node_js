@@ -2,12 +2,17 @@ const { getDb } = require("../util/database"); // allow to access to db connecti
 const mongodb = require("mongodb");
 
 class Product {
-    constructor(title, price, imageUrl, description, id) {
+    constructor(title, price, imageUrl, description, id, userId) {
         this.title = title;
         this.price = price;
         this.imageUrl = imageUrl;
         this.description = description;
         this._id = id ? new mongodb.ObjectId(id) : null;
+        /* 
+            only store user_id to know who is connected
+            so when we create a new product we can pass a user_id
+        */
+        this.userId = userId;
     }
 
     //^ ======================== post & edit products =======================
@@ -16,6 +21,8 @@ class Product {
         /*
             updateOne() - updateMany()
             insertOne() - insertMany()
+            -------------------------------------------------
+            when saving a product store a reference to a user 
         */
         const db = getDb();
         let dbOp;

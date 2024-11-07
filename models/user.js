@@ -16,7 +16,12 @@ class User {
     // find user by id
     static findById(userId) {
         const db = getDb();
-        return db.collection("users").findOne({ _id: new objectId(userId) });
+        return db.collection("users").findOne({ _id: new objectId(userId) }).then(user => {
+            return user;
+        }).catch((err) => {
+            console.log(err);
+            return userId;
+        });
     }
 }
 module.exports = User;
