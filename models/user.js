@@ -27,16 +27,27 @@ class User {
         });
     }
 
-    //^ ==================================== cart ==================================
+    //^ ==================================== cart ====================================
     addToCart(product) {
         /* 1. check if this product is already inside the cart --> increase the quantity */
         // find the index of the product with the same id of the added product 
-        // const cartProduct = this.cart.items.findIndex((cp) => {
-        //     return cp._id === product._id; // index or -1 (if not exist)
-        // });
+        const cartProductIndex = this.cart?.items?.findIndex((cp) => {
+            return cp.productId.toString() === product._id.toString(); // index or -1 (if not exist)
+        });
 
         // 2. add quantity field 
-        const updatedCart = { items: [{ productId: new objectId(product._id), quantity: 1 }] }
+        let newQuantity = 1;
+        const updatedCartItems = [...this.cart.items]; // new array with all items in the cart
+        if (cartProductIndex >= 0) {
+            newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+            updatedCartItems[cartProductIndex].quantity = newQuantity; // edit the array without touching the old array 
+        } else {
+            updatedCartItems.push({ productId: new objectId(product._id), quantity: newQuantity })
+        }
+
+        const updatedCart = {
+            items: updatedCartItems
+        }
         // update the user to store the cart at there 
         const db = getDb();
         return db.collection("users").updateOne(
