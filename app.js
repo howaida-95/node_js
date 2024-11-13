@@ -22,7 +22,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
     User.findById("672bc53bc6b8af3f69a99736").then((user) => {
+        /*
+        user stored here is just an obj with properties (the data we have in a database)
+        not the methods 
+        because it's a data getting out of db & and the methods aren't stored there
         req.user = user;
+        */
+
+        // getting real user --> username, email, cart, id
+        // now we can call User methods on it
+        req.user = new User(user.name, user.email, user.cart, user._id)
         next();
     }).catch((error) => {
         console.log(error)
