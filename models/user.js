@@ -2,10 +2,13 @@
 const { getDb } = require("../util/database");
 const mongodb = require("mongodb");
 const objectId = mongodb.ObjectId;
+
 class User {
-    constructor(username, email) {
+    constructor(username, email, cart, id) {
         this.name = username;
         this.email = email;
+        this.cart = cart; // cart is object with some items --> {items: []}
+        this._id = id;
     }
     // save this user to the database 
     save() {
@@ -23,8 +26,29 @@ class User {
             return userId;
         });
     }
+
+    //^ ==================================== cart ==================================
+    addToCart(product) {
+        /* 1. check if this product is already inside the cart --> increase the quantity */
+        // find the index of the product with the same id of the added product 
+        // const cartProduct = this.cart.items.findIndex((cp) => {
+        //     return cp._id === product._id; // index or -1 (if not exist)
+        // });
+
+        // 2. add quantity field 
+        const updatedCart = { items: [{ ...product, quantity: 1 }] }
+        // update the user to store the cart at there 
+        const db = getDb();
+        return db.collection("users").updateOne(
+            { _id: new objectId(this._id) },
+            // overwrite old cart with a new cart
+            { $set: { cart: updatedCart } }
+        );
+    }
 }
+
 module.exports = User;
+
 /*
 important notes
 ===============
