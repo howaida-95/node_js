@@ -28,6 +28,7 @@ class User {
     }
 
     //^ ==================================== cart ====================================
+    // add to cart 
     addToCart(product) {
         /* 1. check if this product is already inside the cart --> increase the quantity */
         // find the index of the product with the same id of the added product 
@@ -56,8 +57,51 @@ class User {
             { $set: { cart: updatedCart } }
         );
     }
+
+    // get cart 
+    getCart() {
+        // products with respective quantities  
+        // get cart that exists on the user 
+        //return this.cart;
+        // get populated cart 
+
+        const db = getDb();
+        /* find all the products in the cart
+        to find a content
+        $in operator --> takes an array of ids 
+        each id in array will be accepted & get back a cursor  
+        */
+        const productIds = this.cart.items.map((item) => {
+            return item.productId;
+        });
+        console.log(
+            db.collection("products").find({
+                _id: { $in: productIds }
+            }),
+            "products products products products"
+        )
+        return db.collection("products").find({
+            // return all elements which their ids are here in that array
+            _id: { $in: productIds }
+        })
+            .toArray()
+            .then((products) => {
+                return products.map((p) => {
+                    return {
+                        ...p,
+                        quantity: this.cart.items.find(item => {
+                            return item.productId.toString() === p._id.toString();
+                        })
+                    }
+                });
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+    }
 }
 module.exports = User;
+
 /*
 important notes
 ===============
