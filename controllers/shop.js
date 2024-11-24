@@ -119,42 +119,15 @@ exports.postCartDeleteProduct = (req, res, next) => {
 //         })
 // }
 
-// exports.postOrders = (req, res, next) => {
-//     let fetchedCart;
-//     req.user.getCart()
-//         .then(cart => {
-//             // with access to the cart -> we have access to products in the cart
-//             fetchedCart = cart;
-//             return cart.getProducts();
-//         })
-//         .then((products) => {
-//             // create order associated with a user
-//             req.user.createOrder()
-//                 .then(order => {
-//                     return order.addProducts(products.map((product) => {
-//                         /* each product has a special field */
-//                         product.orderItem =
-//                         {
-//                             quantity: product.cartItem.quantity
-//                         };
-//                         return product;
-//                     }));
-//                 })
-//                 .then(order => {
-//                     // drop all cart items
-//                     return fetchedCart.setProducts(null)
-//                 }).then(() => {
-//                     res.redirect("/orders")
-//                 })
-//                 .catch(err => {
-//                     console.log(err)
-//                 });
-//         })
-//         .catch(err => {
-//             console.log(err)
-//         });
-// }
-
+exports.postOrders = (req, res, next) => {
+    req.user.addOrder()
+        .then(() => {
+            res.redirect("/orders");
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+}
 // exports.getCheckout = (req, res, next) => {
 //     // render when fetchAll is done
 //     res.render("shop/checkout", { // render the view
@@ -163,3 +136,32 @@ exports.postCartDeleteProduct = (req, res, next) => {
 //     }
 //     );
 // }
+
+/*
+        .then(cart => {
+            // with access to the cart -> we have access to products in the cart
+            fetchedCart = cart;
+            return cart.getProducts();
+        })
+
+                        product.orderItem =
+                        {
+                            quantity: product.cartItem.quantity
+                        };
+                        return product;
+                    }));
+                })
+                .then(order => {
+                    return fetchedCart.setProducts(null)
+                }).then(() => {
+                    res.redirect("/orders")
+                })
+                .catch(err => {
+                    console.log(err)
+                });
+        })
+        .catch(err => {
+            console.log(err)
+        });
+
+*/
