@@ -103,21 +103,23 @@ exports.postCartDeleteProduct = (req, res, next) => {
         })
 }
 
-// exports.getOrders = (req, res, next) => {
-//     // fetch all the orders & related products
-//     // it works because there's a relation between orders & products
-//     req.user.getOrders({ include: ["products"] })
-//         .then((orders) => {
-//             res.render("shop/orders", {
-//                 path: "/orders",
-//                 pageTitle: "Your orders",
-//                 orders: orders
-//             }
-//             );
-//         }).catch((err) => {
-//             console.log(err)
-//         })
-// }
+exports.getOrders = (req, res, next) => {
+    /*
+        fetch all the orders & related products
+        it works because there's a relation between orders & products
+    */
+    req.user.getOrders()
+        .then((orders) => {
+            res.render("shop/orders", {
+                path: "/orders",
+                pageTitle: "Your orders",
+                orders: orders
+            }
+            );
+        }).catch((err) => {
+            console.log(err)
+        })
+}
 
 exports.postOrders = (req, res, next) => {
     req.user.addOrder()
@@ -128,6 +130,7 @@ exports.postOrders = (req, res, next) => {
             console.log(error)
         })
 }
+
 // exports.getCheckout = (req, res, next) => {
 //     // render when fetchAll is done
 //     res.render("shop/checkout", { // render the view

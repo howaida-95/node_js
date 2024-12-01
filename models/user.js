@@ -8,7 +8,7 @@ class User {
         this.name = username;
         this.email = email;
         this.cart = cart; // cart is object with some items --> {items: []}
-        this._id = id;
+        this._id = id; // user id 
     }
     // save this user to the database
     save() {
@@ -151,14 +151,21 @@ class User {
                 console.log(error);
             });
     }
+
     // get orders
     getOrders() {
         const db = getDb();
-        //return db.collection("orders");
+        /* find all orders for that user 
+        -> we can check nested properties by defining the path to them 
+        find({ "user._id"}) --> looking for _id in user
+        */
+        return db.collection("orders")
+            .find({ "user._id": new objectId(this._id) })
+            .toArray();// return array of orders to that user 
     }
+
 }
 module.exports = User;
-
 /*
 important notes
 ===============
