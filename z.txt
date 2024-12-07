@@ -1,7 +1,11 @@
 ==> Sql database --> mysql 
 connect to sql by:
+orm
 1- sequelae
 1- mysql2
 
 ==> NOSql database --> mongodb database 
 connect to mongo db by mongodb drive
+odm --> mongoose 
+------------------------------------------------------
+--> connect to db 

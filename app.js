@@ -7,11 +7,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
-const { mongoConnect } = require('./util/database');
 const User = require("./models/user");
-const mongodb = require("mongodb");
-//! ------------------------- imports end ----------------------
-
+const mongoose = require("mongoose");
+//! ------------------------- imports end -------------------------
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -44,10 +42,9 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-    /*
-    when connecting check if a user with a specific id exists
-    if not fount create a user 
-    */
-    app.listen(3000);
-});
+mongoose.connect("mongodb+srv://howaidasayed95:1751995@firstapi.7v1ba.mongodb.net/")
+    .then(() => {
+        app.listen(3000)
+    }).catch((err) => {
+        console.log(err);
+    })
