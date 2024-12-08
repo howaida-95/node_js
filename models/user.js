@@ -1,3 +1,36 @@
+const mongoose = require("mongoose");
+// schema constructor to create schema 
+const Schema = mongoose.Schema;
+
+/*
+mongoose is schemaless 
+to focus in your data -> should know how your data look like
+*/
+const productSchema = new Schema({
+    // _id not added because it will be added automatically 
+    // define type & key
+    title: {
+        type: String,
+        required: true,
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    imgUrl: {
+        type: String,
+        required: true,
+    },
+});
+
+
+
+
+
 // // import mongodb client
 // const { getDb } = require("../util/database");
 // const mongodb = require("mongodb");
