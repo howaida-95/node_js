@@ -10,15 +10,21 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     const title = req.body.title;
-    const imageUrl = req.body.imageUrl;
+    const imgUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    const user_id = req.user._id;
+    //const user_id = req.user._id;
     // null for product id 
-    const product = new Product(title, price, imageUrl, description, null, user_id);
+    const product = new Product({
+        // left --> schema key || right --> body data
+        title,
+        imgUrl,
+        price,
+        description
+    });
     product.save()
         .then(result => {
-            //console.log('Created Product');
+            console.log('Created Product');
             res.redirect('/admin/products');
         })
         .catch(err => {

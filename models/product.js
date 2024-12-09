@@ -1,4 +1,41 @@
-// const { getDb } = require("../util/database"); // allow to access to db connection 
+const mongoose = require("mongoose");
+// schema constructor to create schema 
+const Schema = mongoose.Schema;
+
+/*
+mongoose is schemaless 
+to focus in your data -> should know how your data look like
+*/
+const productSchema = new Schema({
+    // _id not added because it will be added automatically 
+    // define type & key
+    title: {
+        type: String,
+        required: true,
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    imgUrl: {
+        type: String,
+        required: true,
+    },
+});
+
+/*
+model (entity name , schema)
+is important for mongoose behind the scenes to connect a schema (blueprint)
+==> mongoose takes the name --> lowercase --> plural
+*/
+module.exports = mongoose.model("Product", productSchema);
+
+
+// const { getDb } = require("../util/database"); // allow to access to db connection
 // const mongodb = require("mongodb");
 
 // class Product {
@@ -8,7 +45,7 @@
 //         this.imageUrl = imageUrl;
 //         this.description = description;
 //         this._id = id ? new mongodb.ObjectId(id) : null;
-//         /* 
+//         /*
 //             only store user_id to know who is connected
 //             so when we create a new product we can pass a user_id
 //         */
@@ -16,20 +53,20 @@
 //     }
 
 //     //^ ======================== post & edit products =======================
-//     // connect to mongo db & save product 
+//     // connect to mongo db & save product
 //     save() {
 //         /*
 //             updateOne() - updateMany()
 //             insertOne() - insertMany()
 //             -------------------------------------------------
-//             when saving a product store a reference to a user 
+//             when saving a product store a reference to a user
 //         */
 //         const db = getDb();
 //         let dbOp;
 //         if (this._id) {
-//             /* update the product 
+//             /* update the product
 //             updateOne -> takes 2 args:
-//                 1- filter ==> defines which element or document we want to update 
+//                 1- filter ==> defines which element or document we want to update
 //                 2- {$set: } ==> specify how to update that document
 //             */
 //             dbOp = db.collection("products")
@@ -63,7 +100,7 @@
 
 //     //^ ======================== get single product =========================
 //     static findById(prodId) {
-//         const db = getDb(); // get access to db connection 
+//         const db = getDb(); // get access to db connection
 //         return db.collection("products")
 //             .find({ _id: new mongodb.ObjectId(prodId) })// return all products that has this id (only one)
 //             .next() // get the last document returned by find
@@ -94,7 +131,7 @@
 
 // module.exports = Product;
 // /*
-//     insertOne - insertMany 
+//     insertOne - insertMany
 //     updateOne - updateMany
 //     deleteOne - deleteMany
 //     findOne /find({_id: new mongodb.ObjectId(id)}) - find
