@@ -19,10 +19,7 @@ exports.getProducts = (req, res, next) => {
 }
 // get single product
 exports.getProduct = (req, res, next) => {
-    // get id
-    // param name productId --> the same used in router
     const prodId = req.params.productId;
-    // console.log(req.params, "req.paramsreq.params", prodId);
     Product.findById(prodId).then((product) => {
         res.render("shop/product-detail", {
             path: "/products",
@@ -33,19 +30,6 @@ exports.getProduct = (req, res, next) => {
     }).catch((err) => {
         console.log(err);
     })
-
-    /*
-        other way to do that by using 
-        findAll & where syntax
-        Product.findAll({where: {id: prodId}}).then(product=> {
-            res.render("shop/product-detail", {
-            path: "/products",
-            pageTitle: "Product",
-            product: product[0],
-                }
-            })
-        .catch(err => console,log(err))
-    */
 }
 
 exports.getIndex = (req, res, next) => {
