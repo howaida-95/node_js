@@ -6,7 +6,7 @@ const Product = require("../models/product");
 // get all products
 exports.getProducts = (req, res, next) => {
     // fetch products
-    Product.fetchAll().then((product) => {
+    Product.find().then((product) => {
         res.render("shop/product-list", { // render the view
             path: "/products",
             pageTitle: "All Products",
@@ -49,11 +49,7 @@ exports.getProduct = (req, res, next) => {
 }
 
 exports.getIndex = (req, res, next) => {
-    /*
-    ==> fetch products
-    findAll --> have where condition we can restrict the data we retrieve
-    */
-    Product.fetchAll().then((product) => {
+    Product.find().then((product) => {
         res.render("shop/index", { // render the view
             path: "/",
             pageTitle: "Shop",

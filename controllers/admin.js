@@ -10,7 +10,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     const title = req.body.title;
-    const imgUrl = req.body.imageUrl;
+    const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
     //const user_id = req.user._id;
@@ -18,7 +18,7 @@ exports.postAddProduct = (req, res, next) => {
     const product = new Product({
         // left --> schema key || right --> body data
         title,
-        imgUrl,
+        imageUrl,
         price,
         description
     });

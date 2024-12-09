@@ -42,7 +42,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoose.connect("mongodb+srv://howaidasayed95:1751995@firstapi.7v1ba.mongodb.net/shop")
+mongoose.connect("mongodb+srv://howaidasayed95:1751995@firstapi.7v1ba.mongodb.net")
     .then(() => {
         app.listen(3000)
     }).catch((err) => {

@@ -5,8 +5,8 @@ const shopController = require("../controllers/shop");
 const express = require("express");
 const router = express.Router();
 
-// router.get("/", shopController.getIndex);
-// router.get("/products", shopController.getProducts);
+router.get("/", shopController.getIndex);
+router.get("/products", shopController.getProducts);
 // // single product --> variable segment
 // // note -> order matters specific route comes before dynamic route
 // router.get("/products/:productId", shopController.getProduct);
