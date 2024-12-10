@@ -1,3 +1,26 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const userSchema = new Schema({
+    // how the user should look like
+    name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+    },
+    cart: {
+        // array of documents (embedded document)
+        items: [{
+            productId: { type: Schema.Types.ObjectId, required: true },
+            quantity: { type: Number, required: true }
+        }],
+    },
+})
+
+module.exports = mongoose.model("User", userSchema);
 
 
 
