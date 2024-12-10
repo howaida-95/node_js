@@ -13,14 +13,15 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    //const user_id = req.user._id;
     // null for product id 
     const product = new Product({
         // left --> schema key || right --> body data
         title,
         imageUrl,
         price,
-        description
+        description,
+        // we can store entire object & mongoose will pick that id from the object
+        userId: req.user._id
     });
     product.save()
         .then(result => {

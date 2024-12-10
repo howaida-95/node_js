@@ -25,6 +25,12 @@ const productSchema = new Schema({
         type: String,
         required: true,
     },
+    // relation setup using ref
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "User", // mongoose model that is related to the data in that field
+        required: true,
+    }
 });
 
 /*

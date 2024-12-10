@@ -14,15 +14,19 @@ const userSchema = new Schema({
     cart: {
         // array of documents (embedded document)
         items: [{
-            productId: { type: Schema.Types.ObjectId, required: true },
-            quantity: { type: Number, required: true }
+            productId: {
+                type: Schema.Types.ObjectId,
+                required: true,
+                ref: "Product"
+            },
+            quantity: {
+                type: Number,
+                required: true
+            }
         }],
     },
 })
-
 module.exports = mongoose.model("User", userSchema);
-
-
 
 // // import mongodb client
 // const { getDb } = require("../util/database");
