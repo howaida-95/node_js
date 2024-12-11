@@ -26,6 +26,39 @@ const userSchema = new Schema({
         }],
     },
 })
+
+/*
+methods key is an object that allows to add our own methods 
+*/
+userSchema.methods.addToCart = function (product) {
+    /* 1. check if this product is already inside the cart --> increase the quantity */
+    // find the index of the product with the same id of the added product
+    const cartProductIndex = this.cart?.items?.findIndex((cp) => {
+        return cp.productId.toString() === product._id.toString(); // index or -1 (if not exist)
+    });
+
+    // 2. add quantity field
+    let newQuantity = 1;
+    const updatedCartItems = [...this.cart.items]; // new array with all items in the cart
+    if (cartProductIndex >= 0) {
+        newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+        updatedCartItems[cartProductIndex].quantity = newQuantity; // edit the array without touching the old array
+    } else {
+        updatedCartItems.push(
+            {
+                // the names used in schema --> productId & quantity
+                productId: product._id,
+                quantity: newQuantity
+            });
+    }
+
+    const updatedCart = {
+        items: updatedCartItems,
+    };
+    this.cart = updatedCart;
+    // update the user to store the cart at there
+    return this.save()
+}
 module.exports = mongoose.model("User", userSchema);
 
 // // import mongodb client
@@ -63,34 +96,7 @@ module.exports = mongoose.model("User", userSchema);
 
 //     //^ ==================================== cart ====================================
 //     // add to cart
-//     addToCart(product) {
-//         /* 1. check if this product is already inside the cart --> increase the quantity */
-//         // find the index of the product with the same id of the added product
-//         const cartProductIndex = this.cart?.items?.findIndex((cp) => {
-//             return cp.productId.toString() === product._id.toString(); // index or -1 (if not exist)
-//         });
 
-//         // 2. add quantity field
-//         let newQuantity = 1;
-//         const updatedCartItems = [...this.cart.items]; // new array with all items in the cart
-//         if (cartProductIndex >= 0) {
-//             newQuantity = this.cart.items[cartProductIndex].quantity + 1;
-//             updatedCartItems[cartProductIndex].quantity = newQuantity; // edit the array without touching the old array
-//         } else {
-//             updatedCartItems.push({ productId: new objectId(product._id), quantity: newQuantity });
-//         }
-
-//         const updatedCart = {
-//             items: updatedCartItems,
-//         };
-//         // update the user to store the cart at there
-//         const db = getDb();
-//         return db.collection("users").updateOne(
-//             { _id: new objectId(this._id) },
-//             // overwrite old cart with a new cart
-//             { $set: { cart: updatedCart } }
-//         );
-//     }
 
 //     // get cart
 //     getCart() {
