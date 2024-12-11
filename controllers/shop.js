@@ -45,20 +45,19 @@ exports.getIndex = (req, res, next) => {
     });
 }
 
-exports.getCart = (req, res, next) => {
-    req.user.getCart()
-        .then((products) => {
-            res.render("shop/cart", {
-                path: "/cart",
-                pageTitle: "Your cart",
-                products: products
-            }
-            );
-        })
-        .catch(err => {
-            console.log(err)
+exports.getCart = async (req, res, next) => {
+    try {
+        const user = await req.user.populate("cart.items.productId");
+        res.render("shop/cart", {
+            path: "/cart",
+            pageTitle: "Your cart",
+            products: user.cart.items
         });
-}
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+};
 
 exports.postCart = (req, res, next) => {
     const prodId = req.body.productId;

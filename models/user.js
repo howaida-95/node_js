@@ -51,7 +51,6 @@ userSchema.methods.addToCart = function (product) {
                 quantity: newQuantity
             });
     }
-
     const updatedCart = {
         items: updatedCartItems,
     };
@@ -95,41 +94,7 @@ module.exports = mongoose.model("User", userSchema);
 //     }
 
 //     //^ ==================================== cart ====================================
-//     // add to cart
 
-
-//     // get cart
-//     getCart() {
-//         const db = getDb();
-//         const productIds = this.cart.items.map((item) => {
-//             return item.productId;
-//         });
-//         console.log(
-//             db.collection("products").find({
-//                 _id: { $in: productIds },
-//             }),
-//             "products products products products"
-//         );
-//         return db
-//             .collection("products")
-//             .find({
-//                 _id: { $in: productIds },
-//             })
-//             .toArray()
-//             .then((products) => {
-//                 return products.map((p) => {
-//                     return {
-//                         ...p,
-//                         quantity: this.cart.items.find((item) => {
-//                             return item.productId.toString() === p._id.toString();
-//                         }),
-//                     };
-//                 });
-//             })
-//             .catch((error) => {
-//                 console.log(error);
-//             });
-//     }
 
 //     // delete cart product
 //     deleteItemFromCart = (productId) => {
@@ -185,12 +150,3 @@ module.exports = mongoose.model("User", userSchema);
 //             .toArray();// return array of orders to that user
 //     }
 // }
-
-
-
-
-
-
-
-
-
