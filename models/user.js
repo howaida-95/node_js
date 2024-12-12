@@ -58,6 +58,13 @@ userSchema.methods.addToCart = function (product) {
     // update the user to store the cart at there
     return this.save()
 }
+userSchema.methods.deleteItemFromCart = function (productId) {
+    const updatedCartItems = this.cart.items.filter((item) => {
+        return !item.productId.equals(productId);
+    });
+    this.cart.items = updatedCartItems;
+    return this.save();
+};
 module.exports = mongoose.model("User", userSchema);
 
 // // import mongodb client
@@ -97,18 +104,6 @@ module.exports = mongoose.model("User", userSchema);
 
 
 //     // delete cart product
-//     deleteItemFromCart = (productId) => {
-//         // keep all items except the one we're deleting
-//         const updatedCartItems = this.cart.items.filter((item) => {
-//             return item.productId.toString() !== productId.toString();
-//         });
-//         const db = getDb();
-//         return db.collection("users").updateOne(
-//             { _id: new objectId(this._id) },
-//             // this now updates the cart
-//             { $set: { cart: { items: updatedCartItems } } }
-//         );
-//     };
 
 //     //^ ==================================== orders ====================================
 //     // add orders to the users
