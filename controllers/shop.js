@@ -1,7 +1,6 @@
 // cart & checkout 
 const Product = require("../models/product");
-//const Cart = require("../models/cart");
-//const Order = require("../models/order");
+const Order = require("../models/order");
 
 // get all products
 exports.getProducts = (req, res, next) => {
@@ -100,14 +99,26 @@ exports.getOrders = (req, res, next) => {
         })
 }
 
-exports.postOrders = (req, res, next) => {
-    req.user.addOrder()
-        .then(() => {
-            res.redirect("/orders");
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+exports.postOrder = (req, res, next) => {
+    req.user.populate("cart.items.productId").then((user) => {
+        const products = user.cart.items.map(i => {
+            return {
+                quantity: i.quantity,
+                product: i.productId
+            }
+        });
+        // initialize order 
+        const order = new Order({
+            products: products,
+            user: {
+                name: req.user.name,
+                userId: req.user
+            },
+        });
+        return order.save()
+    }).then(result => {
+        res.redirect("/orders")
+    }).catch(err => console.log(err))
 }
 
 // exports.getCheckout = (req, res, next) => {

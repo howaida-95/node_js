@@ -58,6 +58,7 @@ userSchema.methods.addToCart = function (product) {
     // update the user to store the cart at there
     return this.save()
 }
+
 userSchema.methods.deleteItemFromCart = function (productId) {
     const updatedCartItems = this.cart.items.filter((item) => {
         return !item.productId.equals(productId);
@@ -65,77 +66,11 @@ userSchema.methods.deleteItemFromCart = function (productId) {
     this.cart.items = updatedCartItems;
     return this.save();
 };
+
+
 module.exports = mongoose.model("User", userSchema);
 
-// // import mongodb client
-// const { getDb } = require("../util/database");
-// const mongodb = require("mongodb");
-// const objectId = mongodb.ObjectId;
-
-// class User {
-//     constructor(username, email, cart, id) {
-//         this.name = username;
-//         this.email = email;
-//         this.cart = cart; // cart is object with some items --> {items: []}
-//         this._id = id; // user id
-//     }
-//     // save this user to the database
-//     save() {
-//         const db = getDb();
-//         return db.collection("users").insertOne(this); // this --> js obj {name: "", email: ""}
-//     }
-
-//     // find user by id
-//     static findById(userId) {
-//         const db = getDb();
-//         return db
-//             .collection("users")
-//             .findOne({ _id: new objectId(userId) })
-//             .then((user) => {
-//                 return user;
-//             })
-//             .catch((err) => {
-//                 console.log(err);
-//                 return userId;
-//             });
-//     }
-
-//     //^ ==================================== cart ====================================
-
-
-//     // delete cart product
-
 //     //^ ==================================== orders ====================================
-//     // add orders to the users
-//     addOrder() {
-//         const db = getDb();
-//         return this.getCart()
-//             .then((products) => {
-//                 // products contain products info & quantity
-//                 const order = {
-//                     items: products,
-//                     user: {
-//                         _id: new objectId(this._id),
-//                         name: this.name,
-//                         //email: this.email
-//                     },
-//                 };
-//                 return db.collection("orders").insertOne(order);
-//             })
-//             .then((result) => {
-//                 // clear the cart in user object
-//                 this.cart = { items: [] };
-//                 // clear the cart in db
-//                 db.collection("users").updateOne(
-//                     { _id: new objectId(this._id) },
-//                     // this now updates the cart
-//                     { $set: { cart: { items: [] } } }
-//                 );
-//             })
-//             .catch((error) => {
-//                 console.log(error);
-//             });
-//     }
 
 //     // get orders
 //     getOrders() {
