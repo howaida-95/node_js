@@ -82,11 +82,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 }
 
 exports.getOrders = (req, res, next) => {
-    /*
-        fetch all the orders & related products
-        it works because there's a relation between orders & products
-    */
-    req.user.getOrders()
+    Order.find({ "user.userId": req.user._id })
         .then((orders) => {
             res.render("shop/orders", {
                 path: "/orders",
