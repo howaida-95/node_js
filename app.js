@@ -1,6 +1,7 @@
 //! ------------------------- imports start --------------------
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
 
 const path = require('path');
 const express = require('express');
@@ -20,15 +21,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
     User.findById("67578b1a9c80c41631592acb").then((user) => {
-        /*
-        user stored here is just an obj with properties (the data we have in a database)
-        not the methods 
-        because it's a data getting out of db & and the methods aren't stored there
-        req.user = user;
-        */
-
-        // getting real user --> username, email, cart, id
-        // now we can call User methods on it
         req.user = user;
         next();
     }).catch((error) => {
@@ -36,9 +28,10 @@ app.use((req, res, next) => {
     })
 })
 
+// register routes 
 app.use("/admin", adminRoutes);
-
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(errorController.get404);
 
