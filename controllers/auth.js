@@ -1,5 +1,5 @@
 exports.getLogin = (req, res, next) => {
-  const isLoggedIn = req.get("cookie")?.split("=")[1]; // cookie: loggedIn=true
+  const isLoggedIn = req.get("cookie")?.split("=")[1] === "true"; // cookie: loggedIn=true
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
@@ -34,6 +34,8 @@ and it will be stored in the browser for every single user
 store in the browser & send it with every request to the server 
 cookies can be set to expire after a certain time
 --> expire (session) --> expired when the browser is closed
+disadvantage --> user can edit it from the browser 
+so using session instead can fix this problem 
 
 - store in session (recommended)
 - store in database (recommended)
