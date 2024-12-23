@@ -15,8 +15,8 @@ exports.postLogin = (req, res, next) => {
   res.redirect("/");
 };
 /*
-session needs cookie to store the session id
-to identify the user
-but the sensitive data is stored on the server
-we can't modify it from the client side
+  session needs cookie to store the session id
+  to identify the user
+  but the sensitive data is stored on the server
+  we can't modify it from the client side
 */
