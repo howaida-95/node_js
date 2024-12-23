@@ -10,6 +10,7 @@ const bodyParser = require("body-parser");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 const mongoose = require("mongoose");
+const session = require("express-session");
 //! ------------------------- imports end -------------------------
 const app = express();
 
@@ -18,6 +19,23 @@ app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+/* 
+initialize the session middleware when the server starts
+then session will be used for every incoming request 
+*/
+app.use(
+  session({
+    // configure the session
+    secret: "my secret", // used to sign the session id cookie (signing the hash)--> should be a long string
+    resave: false, // don't save the session if nothing changed, not be saved on every request for performance
+    saveUninitialized: false, // don't save empty value in the session store
+    // cookie: {
+    //   // configure the cookie
+    //   maxAge: 3600000, // 1 hour in milliseconds
+    //   httpOnly: true, // don't allow client-side javascript to access the cookie
+    // }
+  })
+);
 
 app.use((req, res, next) => {
   User.findById("67578b1a9c80c41631592acb")

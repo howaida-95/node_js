@@ -13,11 +13,8 @@ exports.postLogin = (req, res, next) => {
   //req.isLoggedIn = true;
   // get login data --> email & password
   // assume the user is logged in & redirect
-  /*
-    "Set-Cookie" --> reserved name for cookies
-    "loggedIn=true" --> value for set-cookie ==> key=value
-  */
-  res.setHeader("Set-Cookie", "loggedIn=true");
+
+  res.setHeader("Set-Cookie", "loggedIn=true; httpOnly");
   res.redirect("/");
 };
 
