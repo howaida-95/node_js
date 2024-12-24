@@ -14,6 +14,15 @@ exports.postLogin = (req, res, next) => {
   req.session.isLoggedIn = true; // add a new property to the session object (saved across request but not users)
   res.redirect("/");
 };
+
+exports.postLogout = (req, res, next) => {
+  req.session.destroy((err) => {
+    console.log(err);
+    // function called once session s destroyed
+    res.redirect("/");
+  });
+};
+
 /*
   session needs cookie to store the session id
   to identify the user
