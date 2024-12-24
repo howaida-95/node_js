@@ -19,4 +19,6 @@ exports.postLogin = (req, res, next) => {
   to identify the user
   but the sensitive data is stored on the server
   we can't modify it from the client side
+  --------------------------------------------
+  we can store other data in sessions like: cart 
 */
