@@ -1,3 +1,5 @@
+const User = require("../models/user");
+
 exports.getLogin = (req, res, next) => {
   console.log(req.session.isLoggedIn, "session");
 
@@ -10,9 +12,16 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  // session added to req object by the session middleware
-  req.session.isLoggedIn = true; // add a new property to the session object (saved across request but not users)
-  res.redirect("/");
+  User.findById("67578b1a9c80c41631592acb")
+    .then((user) => {
+      // session added to req object by the session middleware
+      req.session.isLoggedIn = true; // add a new property to the session object (saved across request but not users)
+      req.user = user;
+      res.redirect("/");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.postLogout = (req, res, next) => {
