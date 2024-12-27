@@ -16,6 +16,8 @@
                 -> send as body req in post req
                 -> send as dynamic segment /cart/id
              -->
+             <% if(isAuthenticated) {%>
              <%- include("../includes/add-to-cart.ejs", {product: product}) %>
+             <% } %>
         </main>
         <%- include('../includes/end.ejs') %>

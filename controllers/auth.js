@@ -17,7 +17,17 @@ exports.postLogin = (req, res, next) => {
       // session added to req object by the session middleware
       req.session.isLoggedIn = true; // add a new property to the session object (saved across request but not users)
       req.user = user;
-      res.redirect("/");
+      /*
+      when response the session middleware goes ahead & create that session
+      and that means it writes it to mongodb
+      because we use mongodb session store 
+      redirect is fired independent from that though so redirection might fired early
+      ==> to make sure that session had been set then redirect
+      */
+      req.session.save((err) => {
+        console.log(err);
+        res.redirect("/");
+      });
     })
     .catch((err) => {
       console.log(err);
