@@ -33,15 +33,31 @@ exports.postLogin = (req, res, next) => {
     });
 };
 
+/*
+steps:
+- extract information from request 
+- validate the req body data --> email, password & confirmPassword
+- check if the user with that email already exist 
+because there is no duplicate email in db 
+how ??
+------
+=> create index in mongodb  
+=> find user with that email 
+- create a new user 
+*/
 exports.postSignup = (req, res, next) => {
+  // extract information from request
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+
+  //  check if the user with that email already exist
   User.findOne({ email: email })
     .then((userDoc) => {
       if (userDoc) {
         return res.redirect("/signup");
       }
+      // create a new user
       const user = new User({
         email: email,
         password: password,

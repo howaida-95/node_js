@@ -80,18 +80,6 @@ app.use(errorController.get404);
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    // findOne with no arg --> give the first found item
-    User.findOne().then((user) => {
-      if (!user) {
-        // create user before start listening
-        const user = new User({
-          name: "Howaida Sayed",
-          email: "howaidasayed95@gmail.com",
-          cart: { items: [] },
-        });
-        return user.save();
-      }
-    });
     app.listen(3000);
   })
   .catch((err) => {

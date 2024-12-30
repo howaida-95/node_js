@@ -3,11 +3,15 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   // how the user should look like
-  name: {
+  // name: {
+  //   type: String,
+  //   required: true,
+  // },
+  email: {
     type: String,
     required: true,
   },
-  email: {
+  password: {
     type: String,
     required: true,
   },
@@ -74,5 +78,3 @@ userSchema.methods.clearCart = function () {
 };
 
 module.exports = mongoose.model("User", userSchema);
-
-//     //^ ==================================== orders ====================================
