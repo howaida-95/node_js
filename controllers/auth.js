@@ -65,19 +65,20 @@ exports.postSignup = (req, res, next) => {
       - saltRounds (number of rounds to hash the password)
         the higher the value the longer it will take but the more secure it will be
       */
-      return bcrypt.hash(password, 12);
-    })
-    .then((hashedPassword) => {
-      // create a new user
-      const user = new User({
-        email: email,
-        password: hashedPassword,
-        cart: { items: [] },
-      });
-      return user.save();
-    })
-    .then((result) => {
-      res.redirect("/login");
+      return bcrypt
+        .hash(password, 12)
+        .then((hashedPassword) => {
+          // create a new user
+          const user = new User({
+            email: email,
+            password: hashedPassword,
+            cart: { items: [] },
+          });
+          return user.save();
+        })
+        .then((result) => {
+          res.redirect("/login");
+        });
     })
     .catch((err) => {
       console.log(err);
