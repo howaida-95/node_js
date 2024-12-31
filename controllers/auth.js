@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const bcrypt = require("bcryptjs");
 
 exports.getLogin = (req, res, next) => {
   console.log(req.session.isLoggedIn, "session");
@@ -45,6 +46,7 @@ how ??
 => find user with that email 
 - create a new user 
 */
+
 exports.postSignup = (req, res, next) => {
   // extract information from request
   const email = req.body.email;
@@ -57,10 +59,19 @@ exports.postSignup = (req, res, next) => {
       if (userDoc) {
         return res.redirect("/signup");
       }
+      /* hashed password
+      hash method takes:
+      - password to be hashed
+      - saltRounds (number of rounds to hash the password)
+        the higher the value the longer it will take but the more secure it will be
+      */
+      return bcrypt.hash(password, 12);
+    })
+    .then((hashedPassword) => {
       // create a new user
       const user = new User({
         email: email,
-        password: password,
+        password: hashedPassword,
         cart: { items: [] },
       });
       return user.save();
@@ -84,7 +95,7 @@ exports.getSignup = (req, res, next) => {
 exports.postLogout = (req, res, next) => {
   req.session.destroy((err) => {
     console.log(err);
-    // function called once session s destroyed
+    // function called once session is destroyed
     res.redirect("/");
   });
 };
