@@ -12,22 +12,40 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  User.findById("67578b1a9c80c41631592acb")
+  /* 
+  functionality to ensure that we can sign in
+  - extract information from request
+  - validate the req body data ==> email, password
+  - find the user with that email ==> if no user found ==> return error
+  - compare the password
+  - redirect to home page
+  - set the session
+  */
+
+  // extract data from request
+  const email = req.body.email;
+  const password = req.body.password;
+
+  // find the user with that email
+  User.findOne({ email: email })
     .then((user) => {
-      // session added to req object by the session middleware
-      req.session.isLoggedIn = true; // add a new property to the session object (saved across request but not users)
-      req.user = user;
-      /*
-      when response the session middleware goes ahead & create that session
-      and that means it writes it to mongodb
-      because we use mongodb session store 
-      redirect is fired independent from that though so redirection might fired early
-      ==> to make sure that session had been set then redirect
-      */
-      req.session.save((err) => {
-        console.log(err);
-        res.redirect("/");
-      });
+      if (!user) {
+        return res.redirect("/login");
+      } else {
+        // if user found ==> check the password
+        // bcrypt
+        bcrypt.compare(password, user.password).then((doMatch) => {
+          if (doMatch) {
+            req.session.isLoggedIn = true;
+            req.session.user = user;
+            return req.session.save((err) => {
+              console.log(err);
+              res.redirect("/");
+            });
+          }
+          res.redirect("/login");
+        });
+      }
     })
     .catch((err) => {
       console.log(err);
