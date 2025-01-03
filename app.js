@@ -51,6 +51,7 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then((user) => {
+      console.log("user", user);
       req.user = user; // mongoose model user
       next(); // so incoming req come to the next middleware
     })
@@ -59,22 +60,10 @@ app.use((req, res, next) => {
     });
 });
 
-app.use((req, res, next) => {
-  User.findById("67578b1a9c80c41631592acb")
-    .then((user) => {
-      req.user = user;
-      next();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
-
 // register routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-
 app.use(errorController.get404);
 
 mongoose
