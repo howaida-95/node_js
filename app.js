@@ -13,15 +13,30 @@ const mongoose = require("mongoose");
 // configure session & store
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
 //! ------------------------- imports end -------------------------
 const MONGODB_URI = "mongodb+srv://howaidasayed95:1751995@firstapi.7v1ba.mongodb.net";
 const app = express();
+
 // execute mongodb store as a constructor
 const store = new MongoDBStore({
   // connection string
   uri: MONGODB_URI, // in which db server to store the data
   collection: "sessions", // collection where session stored
 });
+
+/* 
+  initialize csrf protection
+  csrfProtection is a middleware function that will be executed for every incoming request
+  it will check if the incoming request has a valid csrf token
+  if it is valid then the request will be processed
+  otherwise, it will throw an error
+  csrf({ cookie: true }) --> it will send a cookie with the csrf token
+  store the secret that will be used to sign the csrf token in the session(by default) or in the cookie
+*/
+
+const csrfProtection = csrf(); // used after session middleware because it uses session
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -44,6 +59,20 @@ app.use(
     store: store,
   })
 );
+
+/*
+
+in any non get request --> invalid csrf token
+as data is changed via post request , so we need to handle it via post request
+so this package will look for the existence of a csrf token in the views 
+
+steps:
+- pass csrf token in the views
+- req.csrfToken() --> method provided by the csrf middleware which added by this package 
+so it will generate a csrf token and pass it to the views
+
+*/
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
   if (!req.session.user) {
