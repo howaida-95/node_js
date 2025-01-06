@@ -89,6 +89,23 @@ app.use((req, res, next) => {
     });
 });
 
+/***************************************** */
+/*
+isAuthenticated: req.session.isLoggedIn,
+csrfToken: req.csrfToken(),
+tell express that we have data that should be included with every request 
+should be before all the routes
+-> it allows to set local variables that are passed into the views 
+local because they only exist in the views which are rendered 
+with every request executed, these 2 fields will be available in the views
+*/
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
+/***************************************** */
 // register routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -103,3 +120,5 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+/* 1:45 */
