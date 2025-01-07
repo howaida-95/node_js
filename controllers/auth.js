@@ -2,11 +2,10 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 
 exports.getLogin = (req, res, next) => {
-  console.log(req.session.isLoggedIn, "session");
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
-    // it only hold a value if we have error flash into our session 
+    // it only hold a value if we have error flash into our session
     errorMessage: req.flash("error"),
   });
   //console.log(req.get("cookie").split("=")[1], "cookie");
