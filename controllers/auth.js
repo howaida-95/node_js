@@ -6,6 +6,8 @@ exports.getLogin = (req, res, next) => {
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
+    // it only hold a value if we have error flash into our session 
+    errorMessage: req.flash("error"),
   });
   //console.log(req.get("cookie").split("=")[1], "cookie");
 };
@@ -29,6 +31,15 @@ exports.postLogin = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
+        /*
+        store some data before redirecting
+        ==> to store data across requests we need a session 
+        but we don't want to store the error message permanently
+        once the err pulled out from session & used -> remove it
+        ==> used package: connect-flash
+        flash(key,msg)
+        */
+        req.flash("error", "invalid email or password");
         return res.redirect("/login");
       } else {
         // if user found ==> check the password
@@ -106,7 +117,6 @@ exports.getSignup = (req, res, next) => {
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
-    isAuthenticated: false,
   });
 };
 

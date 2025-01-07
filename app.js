@@ -14,6 +14,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
+const flash = require("connect-flash"); // register or initialized after the session
 //! ------------------------- imports end -------------------------
 const MONGODB_URI = "mongodb+srv://howaidasayed95:1751995@firstapi.7v1ba.mongodb.net";
 const app = express();
@@ -73,7 +74,8 @@ so it will generate a csrf token and pass it to the views
 
 */
 app.use(csrfProtection);
-
+// we can use flash middleware across the application
+app.use(flash());
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
@@ -120,5 +122,3 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-
-/* 1:45 */
