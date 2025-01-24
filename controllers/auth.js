@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
@@ -184,13 +185,47 @@ exports.getReset = (req, res, next) => {
 };
 
 exports.postReset = (req, res, next) => {
-  req.session.destroy((err) => {
-    console.log(err);
-    // function called once session is destroyed
-    res.redirect("/");
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+      return res.redirect("/reset");
+    }
+    // store in user object -->
+    const token = buffer.toString("hex");
+    // find the user with that email in database (match email with the email we want to reset)
+    User.findOne({ email: req.body.email })
+      .then((user) => {
+        // console.log(user);
+        if (!user) {
+          // flash message
+          req.flash("error", "no account with that email found");
+          return res.redirect("/reset");
+        }
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 3600000; // 1 hour (in ms)
+        return user.save(); // save the user with the reset token to db
+      })
+      .then((result) => {
+        return transporter
+          .sendMail({
+            to: req.body.email,
+            from: "howaidasayed95@gmail.com",
+            subject: "Password Reset",
+            html: `
+            <p>you requested a password reset</p>
+            <p>click this link <a href="http://localhost:3000/reset/${token}">link</a> to set a new password</p>
+            `,
+          })
+          .then((result) => {
+            console.log("email sent");
+            res.redirect("/");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
   });
 };
-
 /*
   session needs cookie to store the session id
   to identify the user

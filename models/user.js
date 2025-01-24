@@ -15,6 +15,11 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  /*
+  token to reset the password
+  */
+  resetToken: String,
+  resetTokenExpiration: Date,
   cart: {
     // array of documents (embedded document)
     items: [
