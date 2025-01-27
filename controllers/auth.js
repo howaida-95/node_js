@@ -226,6 +226,65 @@ exports.postReset = (req, res, next) => {
       });
   });
 };
+
+//update password
+exports.getNewPassword = (req, res, next) => {
+  /*
+  first --> check if the user for those token exists
+  -> route to encode the token in params ex: /reset/:token
+  -> extract the token from the url
+  -> find the user with that token
+  */
+  const token = req.params.token;
+  User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } }) // gt --> stands for  greater than
+    .then((user) => {
+      let message = req.flash("error");
+      if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
+      res.render("auth/new-password", {
+        path: "/new-password",
+        pageTitle: "New password",
+        errorMessage: message,
+        userId: user._id.toString(),
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postNewPassword = (req, res, next) => {
+  const newPassword = req.body.password;
+  const userId = req.body.userId;
+  const token = req.body.token;
+  let resetUser;
+
+  User.findOne({
+    resetToken: token,
+    resetTokenExpiration: { $gt: Date.now() },
+    _id: userId,
+  })
+    .then((user) => {
+      resetUser = user;
+      return bcrypt.hash(newPassword, 12);
+    })
+    .then((hashedPassword) => {
+      resetUser.password = hashedPassword;
+      resetUser.resetToken = undefined;
+      resetUser.resetTokenExpiration = undefined;
+      return resetUser.save();
+    })
+    .then((result) => {
+      res.redirect("/login");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 /*
   session needs cookie to store the session id
   to identify the user
