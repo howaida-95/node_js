@@ -249,6 +249,7 @@ exports.getNewPassword = (req, res, next) => {
         pageTitle: "New password",
         errorMessage: message,
         userId: user._id.toString(),
+        passwordToken: token,
       });
     })
     .catch((err) => {
@@ -259,22 +260,23 @@ exports.getNewPassword = (req, res, next) => {
 exports.postNewPassword = (req, res, next) => {
   const newPassword = req.body.password;
   const userId = req.body.userId;
-  const token = req.body.token;
+  const passwordToken = req.body.passwordToken;
   let resetUser;
 
   User.findOne({
-    resetToken: token,
-    resetTokenExpiration: { $gt: Date.now() },
+    resetToken: passwordToken,
+    resetTokenExpiration: { $gt: Date.now() }, // non expired token --> greater than current date
     _id: userId,
   })
     .then((user) => {
       resetUser = user;
+      // hash the password
       return bcrypt.hash(newPassword, 12);
     })
     .then((hashedPassword) => {
       resetUser.password = hashedPassword;
-      resetUser.resetToken = undefined;
-      resetUser.resetTokenExpiration = undefined;
+      resetUser.resetToken = undefined; // clear reset token to prevent reuse
+      resetUser.resetTokenExpiration = undefined; // clear resetTokenExpiration to prevent reuse
       return resetUser.save();
     })
     .then((result) => {
