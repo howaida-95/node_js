@@ -60,6 +60,9 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
+  /*
+  check if the product created by the logged in user 
+  */
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
@@ -67,16 +70,19 @@ exports.postEditProduct = (req, res, next) => {
   const updatedDesc = req.body.description;
   Product.findById(prodId)
     .then((product) => {
+      if (product.userId.toString() !== req.user._id.toString()) {
+        return res.redirect("/");
+      }
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.imageUrl = updatedImageUrl;
       Product.description = updatedDesc;
-      return product.save();
+      return product.save().then((result) => {
+        console.log("UPDATED PRODUCT!");
+        res.redirect("/admin/products");
+      });
     })
-    .then((result) => {
-      console.log("UPDATED PRODUCT!");
-      res.redirect("/admin/products");
-    })
+
     .catch((err) => console.log(err));
 };
 
@@ -98,11 +104,18 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.postDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId; // productId --> input name , its value --> input value, router --> form action
-  Product.findByIdAndDelete(prodId)
-    .then((result) => {
-      console.log("DESTROYED PRODUCT");
-      res.redirect("/admin/products");
-    })
-    .catch((err) => console.log(err));
+  /*
+  check if the product created by the logged in user 
+  */
+  const prodId = req.body.productId;
+  // productId --> input name , its value --> input value, router --> form action
+  // Product.findByIdAndDelete(prodId)
+  //   .then((result) => {
+  //     console.log("DESTROYED PRODUCT");
+  //     res.redirect("/admin/products");
+  //   })
+  //   .catch((err) => console.log(err));
+
+  Product.deleteOne({ _id: prodId, userId: req.user._id }) // user id & id --> should match
+    .then(() => {});
 };
