@@ -43,7 +43,7 @@ exports.getEditProduct = (req, res, next) => {
   if (!editMode) {
     return res.redirect("/");
   }
-  const prodId = req.params.productId; 
+  const prodId = req.params.productId;
   Product.findById(prodId)
     .then((product) => {
       if (!product) {
@@ -81,15 +81,12 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  /* fetch the related user data not only userId: 
-    2 ways:
-    -> inside then by using product.userId & findById
-    -> mongoose populate(path_to_populate) --> populate certain field with detail info & not just the id
-    */
-  Product.find()
-    // which field to select or retrieve fro db or unselect
-    //.select(title price -_id) ==> return title & price , and exclude _id
-    //.populate("userId") // we can select & unselect here too in the 2nd argument
+  /*
+  render products that created only by logged user 
+  autherization --> means restrict permissions 
+  userId === logged in user 
+  */
+  Product.find({ userId: req.user._id })
     .then((products) => {
       res.render("admin/products", {
         prods: products,

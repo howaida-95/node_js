@@ -8,4 +8,6 @@ orm
 connect to mongo db by mongodb drive
 odm --> mongoose 
 -------------------------------------------
---> connect to db
+Autherization 
+not every user allowed to do everything 
+restrict a permission for logged in user
