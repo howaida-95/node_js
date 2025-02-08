@@ -3,7 +3,7 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
-
+const { validationResult } = require("express-validator");
 /*
 initialize  nodemailer
 -> transporter: 
@@ -102,49 +102,61 @@ exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
-
-  //  check if the user with that email already exist
-  User.findOne({ email: email })
-    .then((userDoc) => {
-      if (userDoc) {
-        req.flash("error", "E-mail already exist, please pick a different one.");
-        return res.redirect("/signup");
-      }
-      /* hashed password
-      hash method takes:
-      - password to be hashed
-      - saltRounds (number of rounds to hash the password)
-        the higher the value the longer it will take but the more secure it will be
-      */
-      return bcrypt
-        .hash(password, 12)
-        .then((hashedPassword) => {
-          // create a new user
-          const user = new User({
-            email: email,
-            password: hashedPassword,
-            cart: { items: [] },
+  const errors = validationResult(req);
+  console.log(errors.array(), "hellllllllllo", errors.isEmpty());
+  if (!errors.isEmpty()) {
+    // return true or false depends on there is error or not
+    return res
+      .status(422) // validation failed status code -> 422
+      .render("auth/signup", {
+        path: "/signup",
+        pageTitle: "Signup",
+        errorMessage: errors.array()[0].msg,
+      });
+  } else {
+    //  check if the user with that email already exist
+    User.findOne({ email: email })
+      .then((userDoc) => {
+        if (userDoc) {
+          req.flash("error", "E-mail already exist, please pick a different one.");
+          return res.redirect("/signup");
+        }
+        /* hashed password
+        hash method takes:
+        - password to be hashed
+        - saltRounds (number of rounds to hash the password)
+          the higher the value the longer it will take but the more secure it will be
+        */
+        return bcrypt
+          .hash(password, 12)
+          .then((hashedPassword) => {
+            // create a new user
+            const user = new User({
+              email: email,
+              password: hashedPassword,
+              cart: { items: [] },
+            });
+            return user.save();
+          })
+          .then((result) => {
+            // redirect
+            res.redirect("/login");
+            // send email
+            return transporter.sendMail({
+              to: email,
+              from: "howaidasayed95@gmail.com",
+              subject: "signup succeeded",
+              html: "<h1>you successfully signed up</h1>",
+            });
+          })
+          .catch((err) => {
+            console.log(err);
           });
-          return user.save();
-        })
-        .then((result) => {
-          // redirect
-          res.redirect("/login");
-          // send email
-          return transporter.sendMail({
-            to: email,
-            from: "howaidasayed95@gmail.com",
-            subject: "signup succeeded",
-            html: "<h1>you successfully signed up</h1>",
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
 
 exports.getSignup = (req, res, next) => {
