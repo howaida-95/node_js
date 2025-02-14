@@ -38,6 +38,19 @@ router.post(
       //.withMessage("Please Enter a password with only numbers and text at least 5 character")
       .isAlphanumeric(),
     //.withMessage("Please Enter a password with only numbers and text at least 5 character"),
+
+    body("confirmPassword").custom((value, { req }) => {
+      /* we exported req obj to extract password
+        note 
+        ----
+        we don't repeat the same validation of password with confirmPassword 
+        because we are checking the equality here 
+      */
+      if (value !== req.body.confirmPassword) {
+        throw new Error("Passwords have to match");
+      }
+      return true;
+    }),
   ],
 
   authController.postSignup // controller
@@ -50,5 +63,4 @@ router.get("/reset/:token", authController.getNewPassword);
 router.post("/new-password", authController.postNewPassword);
 
 router.post("/logout", authController.postLogout);
-
 module.exports = router;

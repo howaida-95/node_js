@@ -103,7 +103,6 @@ exports.postSignup = (req, res, next) => {
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
-  console.log(errors.array(), "hellllllllllo", errors.isEmpty());
   if (!errors.isEmpty()) {
     // return true or false depends on there is error or not
     return res
