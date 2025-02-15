@@ -119,6 +119,7 @@ exports.postSignup = (req, res, next) => {
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
+  console.log(errors.array(), "hhhhhhhhhhhhhhhhhh");
   if (!errors.isEmpty()) {
     // return true or false depends on there is error or not
     return res
@@ -132,6 +133,7 @@ exports.postSignup = (req, res, next) => {
           password: password,
           confirmPassword: confirmPassword,
         },
+        validationErrors: errors.array(),
       });
   } else {
     //  check if the user with that email already exist
@@ -183,6 +185,7 @@ exports.getSignup = (req, res, next) => {
       password: "",
       confirmPassword: "",
     },
+    validationErrors: [],
   });
 };
 
