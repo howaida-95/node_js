@@ -29,6 +29,10 @@ exports.getLogin = (req, res, next) => {
     pageTitle: "Login",
     // it only hold a value if we have error flash into our session
     errorMessage: message,
+    oldInput: {
+      email: "",
+      password: "",
+    },
   });
   //console.log(req.get("cookie").split("=")[1], "cookie");
 };
@@ -48,6 +52,18 @@ exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render("auth/login", {
+      path: "/login",
+      pageTitle: "Login",
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password,
+      },
+    });
+  }
   // find the user with that email
   User.findOne({ email: email })
     .then((user) => {
@@ -101,6 +117,7 @@ exports.postSignup = (req, res, next) => {
   // extract information from request
   const email = req.body.email;
   const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // return true or false depends on there is error or not
@@ -110,6 +127,11 @@ exports.postSignup = (req, res, next) => {
         path: "/signup",
         pageTitle: "Signup",
         errorMessage: errors.array()[0].msg,
+        oldInput: {
+          email: email,
+          password: password,
+          confirmPassword: confirmPassword,
+        },
       });
   } else {
     //  check if the user with that email already exist
@@ -151,10 +173,16 @@ exports.getSignup = (req, res, next) => {
   } else {
     message = null;
   }
+
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
     errorMessage: message,
+    oldInput: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 };
 
