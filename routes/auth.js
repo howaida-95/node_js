@@ -3,6 +3,7 @@ const authController = require("../controllers/auth");
 const express = require("express");
 const router = express.Router();
 const { check, body } = require("express-validator");
+const User = require("../models/user");
 
 router.get("/login", authController.getLogin);
 router.post("/login", authController.postLogin);
@@ -21,12 +22,13 @@ router.post(
       .withMessage("Please enter a valid email")
       // using custom validation here to check if email is already in use (check specific email)
       .custom((value, { req }) => {
-        // throw an error when validation fails
-        if (value === "test@test.com") {
-          // we can throw error or test@test.com
-          throw new Error("this email address is forbidden");
-        }
-        return true;
+        // throw new Error("this email address is forbidden");
+        return User.findOne({ email: value }).then((userDoc) => {
+          if (userDoc) {
+            // throw an error inside the promise
+            return Promise.reject("E-mail already exist, please pick a different one.");
+          }
+        });
       }),
     /* 
     without using message it will use the default message
