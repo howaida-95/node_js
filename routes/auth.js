@@ -12,16 +12,13 @@ router.post(
     check("email")
       .isEmail()
       .withMessage("Please enter a valid email")
-      .custom((value, { req }) => {
-        return User.findOne({ email: value }).then((userDoc) => {
-          if (userDoc) {
-            return Promise.reject("invalid email");
-          }
-        });
-      }),
+      // built-in sanitizer
+      .normalizeEmail(),
     body("password", "Please Enter a password with only numbers and text at least 5 character")
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      // trim the password to remove excess whitespaces
+      .trim(),
     body("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.confirmPassword) {
         throw new Error("Passwords have to match");
@@ -53,7 +50,8 @@ router.post(
             return Promise.reject("E-mail already exist, please pick a different one.");
           }
         });
-      }),
+      })
+      .normalizeEmail(),
     /* 
     without using message it will use the default message
     we can use withMessage with after every validator
@@ -62,7 +60,8 @@ router.post(
     body("password", "Please Enter a password with only numbers and text at least 5 character")
       .isLength({ min: 5 })
       //.withMessage("Please Enter a password with only numbers and text at least 5 character")
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
     //.withMessage("Please Enter a password with only numbers and text at least 5 character"),
 
     body("confirmPassword").custom((value, { req }) => {

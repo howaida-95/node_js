@@ -11,3 +11,8 @@ odm --> mongoose
 Autherization 
 not every user allowed to do everything 
 restrict a permission for logged in user
+-------------------------------------------
+sanitization 
+=> visual : like remove spacing in user inputs 
+=> logical : like remove sql injection
+=> security: like remove cross site scripting
