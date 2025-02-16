@@ -33,6 +33,7 @@ exports.getLogin = (req, res, next) => {
       email: "",
       password: "",
     },
+    validationErrors: [],
   });
   //console.log(req.get("cookie").split("=")[1], "cookie");
 };
@@ -62,22 +63,24 @@ exports.postLogin = (req, res, next) => {
         email: email,
         password: password,
       },
+      validationErrors: errors.array(),
     });
   }
   // find the user with that email
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
-        /*
-        store some data before redirecting
-        ==> to store data across requests we need a session 
-        but we don't want to store the error message permanently
-        once the err pulled out from session & used -> remove it
-        ==> used package: connect-flash
-        flash(key,msg)
-        */
-        req.flash("error", "invalid email or password");
-        return res.redirect("/login");
+        return res.status(422).render("auth/login", {
+          path: "/login",
+          pageTitle: "Login",
+          errorMessage: "invalid email or password",
+          oldInput: {
+            email: email,
+            password: password,
+          },
+          //validationErrors: [{ path: "email", path: "password" }],
+          validationErrors: [], // not defining which field is invalid
+        });
       } else {
         // if user found ==> check the password
         // bcrypt
@@ -86,12 +89,19 @@ exports.postLogin = (req, res, next) => {
             req.session.isLoggedIn = true;
             req.session.user = user;
             return req.session.save((err) => {
-              console.log(err);
               res.redirect("/");
             });
           }
-          req.flash("error", "invalid email or password");
-          res.redirect("/login");
+          return res.status(422).render("auth/login", {
+            path: "/login",
+            pageTitle: "Login",
+            errorMessage: "invalid email or password",
+            oldInput: {
+              email: email,
+              password: password,
+            },
+            validationErrors: [], // not defining which field is invalid
+          });
         });
       }
     })
@@ -119,7 +129,6 @@ exports.postSignup = (req, res, next) => {
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
-  console.log(errors.array(), "hhhhhhhhhhhhhhhhhh");
   if (!errors.isEmpty()) {
     // return true or false depends on there is error or not
     return res
