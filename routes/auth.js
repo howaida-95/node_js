@@ -65,7 +65,8 @@ router.post(
     //.withMessage("Please Enter a password with only numbers and text at least 5 character"),
 
     body("confirmPassword").custom((value, { req }) => {
-      /* we exported req obj to extract password
+      /* 
+        we exported req obj to extract password
         note 
         ----
         we don't repeat the same validation of password with confirmPassword 
