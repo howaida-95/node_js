@@ -11,6 +11,7 @@ exports.getAddProduct = (req, res, next) => {
     path: "/admin/add-product",
     editing: false,
     hasError: false,
+    errorMessage: null,
   });
 };
 
@@ -21,10 +22,10 @@ exports.postAddProduct = (req, res, next) => {
   const description = req.body.description;
   const errors = validationResult(req);
 
-  if (!errors.isEmpty) {
+  if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
-      path: "/admin/add-product",
+      path: "/admin/edit-product",
       editing: false,
       hasError: true,
       product: {
@@ -34,8 +35,10 @@ exports.postAddProduct = (req, res, next) => {
         description,
         errors,
       },
+      errorMessage: errors.array()[0].msg,
     });
   }
+
   // null for product id
   const product = new Product({
     // left --> schema key || right --> body data
@@ -46,6 +49,7 @@ exports.postAddProduct = (req, res, next) => {
     // we can store entire object & mongoose will pick that id from the object
     userId: req.user._id,
   });
+
   product
     .save()
     .then((result) => {
@@ -73,6 +77,8 @@ exports.getEditProduct = (req, res, next) => {
         path: "/admin/edit-product",
         editing: editMode,
         product: product,
+        hasError: false,
+        errorMessage: null,
       });
     })
     .catch((err) => console.log(err));

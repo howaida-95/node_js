@@ -1,4 +1,3 @@
-
 // //!========== imports start ===================
 // const path = require("path");
 // const bodyParser = require("body-parser");
@@ -24,7 +23,7 @@ const express = require("express");
 const adminController = require("../controllers/admin");
 const router = express.Router();
 const isAuth = require("../middleware/is-auth");
-const { body } = require("express-validator/check");
+const { body } = require("express-validator");
 
 // /admin/add-product => GET
 router.get(
@@ -35,13 +34,14 @@ router.get(
 // /admin/add-product => POST
 router.post(
   "/add-product",
+  isAuth,
   [
-    body("title").isAlphanumeric().isLength({ min: 3 }).trim(),
+    body("title").isString().isLength({ min: 3 }).trim(),
     body("imageUrl").isURL(),
-    body("price"),
+    body("price").isFloat({ gt: 0 }),
     body("description").isAlphanumeric().isLength({ min: 5, max: 400 }).trim(),
   ],
-  isAuth,
+
   adminController.postAddProduct
 );
 // // /admin/products => GET
