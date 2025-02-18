@@ -39,7 +39,7 @@ router.post(
     body("title").isString().isLength({ min: 3 }).trim(),
     body("imageUrl").isURL(),
     body("price").isFloat({ gt: 0 }),
-    body("description").isAlphanumeric().isLength({ min: 5, max: 400 }).trim(),
+    body("description").isString().isLength({ min: 5, max: 400 }).trim(),
   ],
 
   adminController.postAddProduct

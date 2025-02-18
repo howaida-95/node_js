@@ -51,7 +51,7 @@
                     </textarea>
                 </div>
 
-                <% if (editing || hasError ) { %>
+                <% if (editing ) { %>
                     <input 
                         type="hidden" 
                         value="<%= product._id %>" 
@@ -60,7 +60,7 @@
                 <% } %>
 
                 <button class="btn" type="submit">
-                    <% if (editing || hasError ) { %> Update product <% } else { %> Add Product <%} %>
+                    <% if (editing) { %> Update product <% } else { %> Add Product <%} %>
                 </button>
             </form>
         </main>
