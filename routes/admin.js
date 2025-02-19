@@ -36,10 +36,10 @@ router.post(
   "/add-product",
   isAuth,
   [
-    body("title").isString().isLength({ min: 3 }).trim(),
+    body("title").notEmpty().optional().isString().isLength({ min: 3 }).trim(),
     body("imageUrl").isURL(),
     body("price").isFloat({ gt: 0 }),
-    body("description").isString().isLength({ min: 5, max: 400 }).trim(),
+    body("description").notEmpty().optional().isString().isLength({ min: 5, max: 400 }).trim(),
   ],
 
   adminController.postAddProduct
@@ -50,16 +50,15 @@ router.get("/products", isAuth, adminController.getProducts);
 router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);
 router.post(
   "/edit-product",
-  [
-    body("title").isAlphanumeric().isLength({ min: 3 }).trim(),
-    body("imageUrl").isURL(),
-    body("price"),
-    body("description").isAlphanumeric().isLength({ min: 5, max: 400 }).trim(),
-  ],
   isAuth,
+  [
+    body("title").notEmpty().optional().isString().isLength({ min: 3 }).trim(),
+    body("imageUrl").isURL(),
+    body("price").isFloat({ gt: 0 }),
+    body("description").notEmpty().optional().isString().isLength({ min: 5, max: 400 }).trim(),
+  ],
   adminController.postEditProduct
 );
-
 router.post("/delete-product", isAuth, adminController.postDeleteProduct);
 
 module.exports = router;
