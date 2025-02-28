@@ -82,15 +82,16 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then((user) => {
-      console.log("user", user);
+      if (!user) {
+        next();
+      }
       req.user = user; // mongoose model user
       next(); // so incoming req come to the next middleware
     })
     .catch((err) => {
-      console.log(err);
+      throw new Error(err);
     });
 });
-
 /***************************************** */
 /*
 isAuthenticated: req.session.isLoggedIn,
