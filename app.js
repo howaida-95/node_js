@@ -76,22 +76,7 @@ so it will generate a csrf token and pass it to the views
 app.use(csrfProtection);
 // we can use flash middleware across the application
 app.use(flash());
-app.use((req, res, next) => {
-  if (!req.session.user) {
-    return next();
-  }
-  User.findById(req.session.user._id)
-    .then((user) => {
-      if (!user) {
-        next();
-      }
-      req.user = user; // mongoose model user
-      next(); // so incoming req come to the next middleware
-    })
-    .catch((err) => {
-      throw new Error(err);
-    });
-});
+
 /******************************************/
 /*
 isAuthenticated: req.session.isLoggedIn,
@@ -109,6 +94,25 @@ app.use((req, res, next) => {
 });
 
 /***************************************** */
+
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then((user) => {
+      if (!user) {
+        next();
+      }
+      req.user = user; // mongoose model user
+      next(); // so incoming req come to the next middleware
+    })
+    .catch((err) => {
+      //throw new Error(err); not doing anything, not lead to express error handling
+      next(new Error(err));
+    });
+});
+
 // register routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -119,12 +123,17 @@ app.get("/500", errorController.get500);
 // not a technical error object
 app.use(errorController.get404);
 
-// ERROR handling middleware (contain 4 args)
+// express ERROR handling middleware (contain 4 args)
 // reached when we call next(err)
 app.use((error, req, res, next) => {
   //res.status(error.httpStatusCode).render();
   //res.render("500");
-  res.redirect("/500");
+  //res.redirect("/500");
+
+  res.status(500).render("500", {
+    path: "/500",
+    pageTitle: "Error!",
+  });
 });
 
 mongoose
@@ -135,3 +144,8 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+/*
+  in synchronous code --> throw the error 
+  in async code --> use next(err)
+  */
