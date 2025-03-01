@@ -41,7 +41,6 @@ router.post(
     body("price").isFloat({ gt: 0 }),
     body("description").notEmpty().optional().isString().isLength({ min: 5, max: 400 }).trim(),
   ],
-
   adminController.postAddProduct
 );
 // // /admin/products => GET
