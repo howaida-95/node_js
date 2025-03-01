@@ -59,7 +59,15 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      res.redirect("/500");
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      /*
+      Calling next() with an error object tells Express to skip normal request processing and instead 
+      go straight to an error-handling middleware.
+      */
+      return next(error);
+
+      //res.redirect("/500");
       // code 500 --> server side issue code
       // return res.status(500).render("admin/edit-product", {
       //   pageTitle: "Add Product",

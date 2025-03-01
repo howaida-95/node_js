@@ -116,7 +116,16 @@ app.use(authRoutes);
 
 app.get("/500", errorController.get500);
 // for every middleware not handled ahead of time , it will be handled by this middleware
+// not a technical error object
 app.use(errorController.get404);
+
+// ERROR handling middleware (contain 4 args)
+// reached when we call next(err)
+app.use((error, req, res, next) => {
+  //res.status(error.httpStatusCode).render();
+  //res.render("500");
+  res.redirect("/500");
+});
 
 mongoose
   .connect(MONGODB_URI)
