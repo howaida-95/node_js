@@ -148,4 +148,33 @@ mongoose
 /*
   in synchronous code --> throw the error 
   in async code --> use next(err)
-  */
+  ---------------------------------------
+  error code -> extra information send to the browser so it understands if an operation succeeded or not
+  if an error happened and which kind  of error 
+  map certain types of error ---> to certain  kind of status code
+
+  - 2 hundred status code (success status code)
+  most important --> 200 & 201 
+    200 (operation succeeded)
+    201 (success and resource created)
+
+  - 3 hundreds status code (redirection)
+    301 (permanent redirect)
+
+  - 4 hundreds status code (client error)
+    error happened because something happened by the client 
+    ex: 
+    incorrect data was entered into a form --> 420
+    401 --> not authenticated
+    403 --> not authorized
+    404 --> not found
+    405 --> method not allowed
+    406 --> not acceptable
+    410 --> gone
+    422 -> invalid input
+
+  - 5 hundreds status code (server error)
+    indicates server side error occurred 
+    500 --> internal server error
+    
+*/

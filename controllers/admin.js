@@ -56,7 +56,8 @@ exports.postAddProduct = (req, res, next) => {
     .save()
     .then((result) => {
       console.log("Created Product");
-      res.redirect("/admin/products");
+      res.redirect("/admin/products"); // redirect (use 3 hundreds code automatically)
+      // with restful api --> return 201 makes sense
     })
     .catch((err) => {
       const error = new Error(err);
