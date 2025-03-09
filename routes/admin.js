@@ -37,7 +37,7 @@ router.post(
   isAuth,
   [
     body("title").notEmpty().optional().isString().isLength({ min: 3 }).trim(),
-    body("imageUrl").isURL(),
+   // body("imageUrl").isURL(),
     body("price").isFloat({ gt: 0 }),
     body("description").notEmpty().optional().isString().isLength({ min: 5, max: 400 }).trim(),
   ],
@@ -52,7 +52,7 @@ router.post(
   isAuth,
   [
     body("title").notEmpty().optional().isString().isLength({ min: 3 }).trim(),
-    body("imageUrl").isURL(),
+    //body("imageUrl").isURL(),
     body("price").isFloat({ gt: 0 }),
     body("description").notEmpty().optional().isString().isLength({ min: 5, max: 400 }).trim(),
   ],
