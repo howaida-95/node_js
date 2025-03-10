@@ -23,6 +23,7 @@ exports.postAddProduct = (req, res, next) => {
   const description = req.body.description;
   const errors = validationResult(req);
 
+  console.log(imageUrl, "000000000000000000000");
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",

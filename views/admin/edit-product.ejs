@@ -11,7 +11,11 @@
                 <div class="user-message user-message--error" role="alert"><%= errorMessage %></div>
             <% } %>
 
-            <form action="/admin<%= editing ? '/edit-product' : '/add-product' %>" method="POST">
+            <form 
+                action="/admin<%= editing ? '/edit-product' : '/add-product' %>" 
+                method="POST"
+                enctype="multipart/form-data">
+                
                 <input type="hidden" value="<%= csrfToken %>" name="_csrf" />
                 <div class="form-control">
                     <label for="title">Title</label>

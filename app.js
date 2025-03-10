@@ -40,7 +40,11 @@ const csrfProtection = csrf(); // used after session middleware because it uses 
 
 app.set("view engine", "ejs");
 app.set("views", "views");
-
+/*
+  encoded in text when submitted --> urlencoded
+  bodyParser --> can't handle file data
+  file is binary data --> multipart/form-data
+*/
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 /* 
