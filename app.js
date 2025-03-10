@@ -15,6 +15,8 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash"); // register or initialized after the session
+const multer = require("multer");
+
 //! ------------------------- imports end -------------------------
 const MONGODB_URI = "mongodb+srv://howaidasayed95:1751995@firstapi.7v1ba.mongodb.net";
 const app = express();
@@ -44,8 +46,16 @@ app.set("views", "views");
   encoded in text when submitted --> urlencoded
   bodyParser --> can't handle file data
   file is binary data --> multipart/form-data
+  multer --> middleware for each request 
+single("image") --> image (the name of input file)
 */
 app.use(bodyParser.urlencoded({ extended: false }));
+// initialize multer
+app.use(multer({
+  dest: "images",
+
+}).single("image"));
+
 app.use(express.static(path.join(__dirname, "public")));
 /* 
 initialize the session middleware when the server starts
