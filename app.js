@@ -39,6 +39,21 @@ const store = new MongoDBStore({
 */
 
 const csrfProtection = csrf(); // used after session middleware because it uses session
+//^ multer
+// diskStorage: is a storage engine which we can use multer
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // if error nullable tell multer to store it
+    // cb(err, storage place)
+    cb(null, "images");
+  },
+  /*
+2 images with the same name doesn't override each other 
+*/
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()} - ${file.originalname}`);
+  },
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -47,14 +62,15 @@ app.set("views", "views");
   bodyParser --> can't handle file data
   file is binary data --> multipart/form-data
   multer --> middleware for each request 
-single("image") --> image (the name of input file)
+  single("image") --> image (the name of input file)
 */
 app.use(bodyParser.urlencoded({ extended: false }));
 // initialize multer
-app.use(multer({
-  dest: "images",
-
-}).single("image"));
+app.use(
+  multer({
+    storage: fileStorage,
+  }).single("image")
+);
 
 app.use(express.static(path.join(__dirname, "public")));
 /* 
@@ -143,7 +159,6 @@ app.use((error, req, res, next) => {
   //res.status(error.httpStatusCode).render();
   //res.render("500");
   //res.redirect("/500");
-
   res.status(500).render("500", {
     path: "/500",
     pageTitle: "Error!",
