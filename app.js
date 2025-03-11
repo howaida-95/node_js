@@ -55,6 +55,16 @@ const fileStorage = multer.diskStorage({
   },
 });
 
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/png" || file.mimetype === "image/jpg" || file.mimetype === "image/jpeg") {
+    cb(null, true); // accept that file
+  } else {
+    cb(null, false); // reject that file
+  }
+};
+
+
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 /*
@@ -69,6 +79,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   multer({
     storage: fileStorage,
+    fileFilter: fileFilter,
   }).single("image")
 );
 
@@ -92,7 +103,6 @@ app.use(
 );
 
 /*
-
 in any non get request --> invalid csrf token
 as data is changed via post request , so we need to handle it via post request
 so this package will look for the existence of a csrf token in the views 
