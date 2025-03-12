@@ -16,3 +16,8 @@ sanitization
 => visual : like remove spacing in user inputs 
 => logical : like remove sql injection
 => security: like remove cross site scripting
+----------------------------------------------
+files shouldn't stored in database they are too big 
+it's too inefficient to store them in a database & query them from there 
+store a file on a file system 
+we store the path to the file in database 

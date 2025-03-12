@@ -18,75 +18,57 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.file;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
-  const errors = validationResult(req);
 
-  console.log(imageUrl, "imageUrl");
-
-  if (!errors.isEmpty()) {
+  if (!image) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
-      path: "/admin/edit-product",
+      path: "/admin/add-product",
       editing: false,
       hasError: true,
-      product: {
-        title,
-        imageUrl,
-        price,
-        description,
-        errors,
-      },
+      product: { title, price, description },
+      errorMessage: "Attached file is not an image.",
+      validationErrors: [],
+    });
+  }
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: false,
+      hasError: true,
+      product: { title, price, description },
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array(),
     });
   }
 
-  // null for product id
+  // path of the file in my operating system
+  const imageUrl = image.path;
+
   const product = new Product({
-    // left --> schema key || right --> body data
     title,
-    imageUrl,
     price,
     description,
-    // we can store entire object & mongoose will pick that id from the object
-    userId: req.user._id,
+    imageUrl,
+    userId: req.user,
   });
 
   product
     .save()
-    .then((result) => {
+    .then(() => {
       console.log("Created Product");
-      res.redirect("/admin/products"); // redirect (use 3 hundreds code automatically)
-      // with restful api --> return 201 makes sense
+      res.redirect("/admin/products");
     })
     .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
-      /*
-      Calling next() with an error object tells Express to skip normal request processing and instead 
-      go straight to an error-handling middleware.
-      */
       return next(error);
-
-      //res.redirect("/500");
-      // code 500 --> server side issue code
-      // return res.status(500).render("admin/edit-product", {
-      //   pageTitle: "Add Product",
-      //   path: "/admin/edit-product",
-      //   editing: false,
-      //   hasError: true,
-      //   product: {
-      //     title,
-      //     imageUrl,
-      //     price,
-      //     description,
-      //     errors,
-      //   },
-      //   errorMessage: "database operation failed, please try again.",
-      //   validationErrors: [],
-      // });
     });
 };
 
@@ -119,7 +101,11 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
-  /* check if the product created by the logged in user */
+  /* 
+  check if the product created by the logged in user 
+  => 4: 34
+  
+  */
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
