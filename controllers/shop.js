@@ -1,6 +1,8 @@
 // cart & checkout
 const Product = require("../models/product");
 const Order = require("../models/order");
+const fs = require("fs");
+const path = require("path");
 
 // get all products
 exports.getProducts = (req, res, next) => {
@@ -187,3 +189,20 @@ exports.postOrder = (req, res, next) => {
         });
 
 */
+exports.getInvoice = (req, res, next) => {
+  // order id is encoded in url --> so we use params
+  const orderId = req.params.orderId;
+  const invoiceName = `invoice-${orderId}.pdf`;
+  // data folder --> invoices folder --> file name
+  const invoicePath = path.join("data", "invoices", invoiceName);
+  // retrieve file with node file system
+  fs.readFile(invoicePath, (err, data) => {
+    // the data will be in buffer format
+    if (err) {
+      return next(err); // pass the error to the next middleware
+    }
+    res.setHeader("Content-Disposition", `attachment; filename="${invoiceName}"`);
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(data); // send the pdf buffer to the client
+  });
+};

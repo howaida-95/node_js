@@ -2,7 +2,6 @@
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
-
 const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
