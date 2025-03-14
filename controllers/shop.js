@@ -192,23 +192,37 @@ exports.postOrder = (req, res, next) => {
 exports.getInvoice = (req, res, next) => {
   // order id is encoded in url --> so we use params
   const orderId = req.params.orderId;
-  const invoiceName = `invoice-${orderId}.pdf`;
-  // data folder --> invoices folder --> file name
-  const invoicePath = path.join("data", "invoices", invoiceName);
-  // retrieve file with node file system
-  fs.readFile(invoicePath, (err, data) => {
-    // the data will be in buffer format
-    if (err) {
-      return next(err); // pass the error to the next middleware
-    }
-    /* 
-    pass extra info to the browser
-    how this content should be served
-    inline --> to open in the browser
-    attachment --> to download
-    */
-    res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
-    res.setHeader("Content-Type", "application/pdf");
-    res.send(data); // send the pdf buffer to the client
-  });
+  Order.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        return next(new Error("no order found"));
+      }
+      // check if the order is for the logged in user
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+        return next(new Error("unauthorized"));
+      }
+
+      const invoiceName = `invoice-${orderId}.pdf`;
+      // data folder --> invoices folder --> file name
+      const invoicePath = path.join("data", "invoices", invoiceName);
+      // retrieve file with node file system
+      fs.readFile(invoicePath, (err, data) => {
+        // the data will be in buffer format
+        if (err) {
+          return next(err); // pass the error to the next middleware
+        }
+        /* 
+        pass extra info to the browser
+        how this content should be served
+        inline --> to open in the browser
+        attachment --> to download
+        */
+        res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
+        res.setHeader("Content-Type", "application/pdf");
+        res.send(data); // send the pdf buffer to the client
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
