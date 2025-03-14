@@ -201,7 +201,13 @@ exports.getInvoice = (req, res, next) => {
     if (err) {
       return next(err); // pass the error to the next middleware
     }
-    res.setHeader("Content-Disposition", `attachment; filename="${invoiceName}"`);
+    /* 
+    pass extra info to the browser
+    how this content should be served
+    inline --> to open in the browser
+    attachment --> to download
+    */
+    res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
     res.setHeader("Content-Type", "application/pdf");
     res.send(data); // send the pdf buffer to the client
   });
