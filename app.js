@@ -47,11 +47,12 @@ const fileStorage = multer.diskStorage({
     // cb(err, storage place)
     cb(null, "images");
   },
+
   /*
 2 images with the same name doesn't override each other 
 */
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()} - ${file.originalname}`);
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
@@ -81,7 +82,15 @@ app.use(
   }).single("image")
 );
 
+/* 
+statically serving a folder 
+the req to files in that folder will be handled automatically & the files will be returned
+==> files served as they are in the root folder like /... not images/ or public/
+*/
 app.use(express.static(path.join(__dirname, "public")));
+// if there's a req starts with /images
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 /* 
 initialize the session middleware when the server starts
 then session will be used for every incoming request 
