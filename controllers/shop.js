@@ -5,6 +5,8 @@ const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
 
+const ITEMS_PER_PAGE = 2;
+
 // get all products
 exports.getProducts = (req, res, next) => {
   // fetch products
@@ -42,7 +44,18 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
+  /*
+    retrieve the info on which page we are 
+    which data for which page needs to be displayed
+  */
+  const page = req.query.page || 1; // getting page number from query string
+  // control the amount of data we retrieve from database
+
   Product.find()
+    //  page -1 --> previous page number
+    // limit the amount of items we retrieve from database
+    .skip((page - 1) * ITEMS_PER_PAGE)
+    .limit(ITEMS_PER_PAGE)
     .then((product) => {
       res.render("shop/index", {
         // render the view
