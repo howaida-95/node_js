@@ -3,6 +3,7 @@ const Product = require("../models/product");
 const Order = require("../models/order");
 const fs = require("fs");
 const path = require("path");
+const PDFDocument = require("pdfkit");
 
 // get all products
 exports.getProducts = (req, res, next) => {
@@ -228,6 +229,36 @@ exports.postOrder = (req, res, next) => {
 //     });
 // };
 
+// exports.getInvoice = (req, res, next) => {
+//   // order id is encoded in url --> so we use params
+//   const orderId = req.params.orderId;
+//   Order.findById(orderId)
+//     .then((order) => {
+//       if (!order) {
+//         return next(new Error("no order found"));
+//       }
+//       // check if the order is for the logged in user
+//       if (order.user.userId.toString() !== req.user._id.toString()) {
+//         return next(new Error("unauthorized"));
+//       }
+
+//       const invoiceName = `invoice-${orderId}.pdf`;
+//       // data folder --> invoices folder --> file name
+//       const invoicePath = path.join("data", "invoices", invoiceName);
+//       // retrieve file with node file system
+//       const file = fs.createReadStream(invoicePath);
+//       res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
+//       res.setHeader("Content-Type", "application/pdf");
+//       // forward the data that read from the file to the client
+//       // so the response will be streamed to the browser
+//       file.pipe(res);
+//     })
+//     .catch((err) => {
+//       next(err);
+//     });
+// };
+
+// create pdf file on the fly (not read it)
 exports.getInvoice = (req, res, next) => {
   // order id is encoded in url --> so we use params
   const orderId = req.params.orderId;
@@ -244,18 +275,29 @@ exports.getInvoice = (req, res, next) => {
       const invoiceName = `invoice-${orderId}.pdf`;
       // data folder --> invoices folder --> file name
       const invoicePath = path.join("data", "invoices", invoiceName);
-      // retrieve file with node file system
-      const file = fs.createReadStream(invoicePath);
+      // create a new pdf document
+      const pdfDoc = new PDFDocument(); // create a new pdf document & it's a readable stream
       res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
       res.setHeader("Content-Type", "application/pdf");
-      // forward the data that read from the file to the client
-      // so the response will be streamed to the browser
-      file.pipe(res);
+      /*
+      1. pipe this output into a writable filestream
+      2. pipe the output into a response 
+      whatever we add to a doc will forward into that file (invoicePath) that gets generated on the fly
+      and into our response
+      */
+
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+      // add data to the pdf document
+      pdfDoc.text("Hello world!"); // add single line of text to pdf
+      pdfDoc.end();
+
     })
     .catch((err) => {
       next(err);
     });
 };
+
 /*
 fs.readFile() ==>
 once we read the file --> we send it to the client
