@@ -189,6 +189,45 @@ exports.postOrder = (req, res, next) => {
         });
 
 */
+
+// exports.getInvoice = (req, res, next) => {
+//   // order id is encoded in url --> so we use params
+//   const orderId = req.params.orderId;
+//   Order.findById(orderId)
+//     .then((order) => {
+//       if (!order) {
+//         return next(new Error("no order found"));
+//       }
+//       // check if the order is for the logged in user
+//       if (order.user.userId.toString() !== req.user._id.toString()) {
+//         return next(new Error("unauthorized"));
+//       }
+
+//       const invoiceName = `invoice-${orderId}.pdf`;
+//       // data folder --> invoices folder --> file name
+//       const invoicePath = path.join("data", "invoices", invoiceName);
+//       // retrieve file with node file system
+//       fs.readFile(invoicePath, (err, data) => {
+//         // the data will be in buffer format
+//         if (err) {
+//           return next(err); // pass the error to the next middleware
+//         }
+//         /*
+//         pass extra info to the browser
+//         how this content should be served
+//         inline --> to open in the browser
+//         attachment --> to download
+//         */
+//         res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
+//         res.setHeader("Content-Type", "application/pdf");
+//         res.send(data); // send the pdf buffer to the client
+//       });
+//     })
+//     .catch((err) => {
+//       next(err);
+//     });
+// };
+
 exports.getInvoice = (req, res, next) => {
   // order id is encoded in url --> so we use params
   const orderId = req.params.orderId;
@@ -206,23 +245,45 @@ exports.getInvoice = (req, res, next) => {
       // data folder --> invoices folder --> file name
       const invoicePath = path.join("data", "invoices", invoiceName);
       // retrieve file with node file system
-      fs.readFile(invoicePath, (err, data) => {
-        // the data will be in buffer format
-        if (err) {
-          return next(err); // pass the error to the next middleware
-        }
-        /* 
-        pass extra info to the browser
-        how this content should be served
-        inline --> to open in the browser
-        attachment --> to download
-        */
-        res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
-        res.setHeader("Content-Type", "application/pdf");
-        res.send(data); // send the pdf buffer to the client
-      });
+      const file = fs.createReadStream(invoicePath);
+      res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`);
+      res.setHeader("Content-Type", "application/pdf");
+      // forward the data that read from the file to the client
+      // so the response will be streamed to the browser
+      file.pipe(res);
     })
     .catch((err) => {
       next(err);
     });
 };
+/*
+fs.readFile() ==>
+once we read the file --> we send it to the client
+that's fine with small files 
+steps 
+-----
+- first node access the file 
+- read the entire content into memory 
+- then return the response 
+-------------------------------------------------------
+=> in case bigger files 
+it will takes a lot of time to read the file before sent response 
+and the memory on server will overflow at some time for incoming requests
+because it has to read the entire file into memory(which is limited) before sending the response
+
+reading file data into memory to serve it as a response ===> isn't a good practice
+for tiny files -> it's ok 
+for bigger files -> it isn't ok
+================================
+solution 
+========
+streaming the response data 
+node never has to pre-load all the data into memory 
+but streams it to the client on the fly
+and the most it has to store is one chunk of data 
+we work with --> chunks 
+give us access to chunks --> buffers 
+we don't wait for all the chunks to come together and concatenate them into one object 
+instead we forward them to the browser
+(which is also able to concatenate the incoming data pieces into the final file)
+*/
