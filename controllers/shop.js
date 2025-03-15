@@ -284,14 +284,27 @@ exports.getInvoice = (req, res, next) => {
       2. pipe the output into a response 
       whatever we add to a doc will forward into that file (invoicePath) that gets generated on the fly
       and into our response
+
+      The pdfDoc (PDF document stream) is piped into two places:
+      A file stream (invoicePath) → Saves the PDF to disk.
+      The response stream (res) → Sends the PDF directly to the client.
       */
 
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
       // add data to the pdf document
-      pdfDoc.text("Hello world!"); // add single line of text to pdf
-      pdfDoc.end();
-
+      //pdfDoc.text("Hello world!"); // add single line of text to pdf
+      pdfDoc.fontSize(26).text("invoice", {
+        underline: true,
+      });
+      let totalPrice = 0;
+      order.products.forEach((prod) => {
+        totalPrice += prod.quantity * prod.product.price; // calculate total price
+        pdfDoc.fontSize(14).text(`${prod.product.title}  -${prod.quantity}x  $${prod.product.price}`);
+      });
+      pdfDoc.text(`------------------------`);
+      pdfDoc.fontSize(20).text(`Total Price: $${totalPrice}`);
+      pdfDoc.end(); // Closes the PDF stream, signaling that the document is complete.
     })
     .catch((err) => {
       next(err);
