@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const Product = require("../models/product");
+const fileHelper = require("../util/file");
 
 exports.getAddProduct = (req, res, next) => {
   // check if the user is authenticated or not first before rendering the page
@@ -101,27 +102,22 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
-  /* 
-  check if the product created by the logged in user 
-  => 4: 34
-  
-  */
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
-  const updatedImageUrl = req.body.imageUrl;
+  const image = req.file;
   const updatedDesc = req.body.description;
+
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
-      pageTitle: "Add Product",
+      pageTitle: "Edit Product",
       path: "/admin/edit-product",
       editing: true,
       hasError: true,
       product: {
         title: updatedTitle,
-        imageUrl: updatedImageUrl,
         price: updatedPrice,
         description: updatedDesc,
         _id: prodId,
@@ -138,14 +134,18 @@ exports.postEditProduct = (req, res, next) => {
       }
       product.title = updatedTitle;
       product.price = updatedPrice;
-      product.imageUrl = updatedImageUrl;
       product.description = updatedDesc;
+      if (image) {
+        // delete the old image
+        fileHelper.deleteFile(product.imageUrl);
+        // save the new image
+        product.imageUrl = image.path;
+      }
       return product.save().then((result) => {
         console.log("UPDATED PRODUCT!");
         res.redirect("/admin/products");
       });
     })
-
     .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
@@ -179,20 +179,29 @@ exports.postDeleteProduct = (req, res, next) => {
   check if the product created by the logged in user 
   */
   const prodId = req.body.productId;
-  // productId --> input name , its value --> input value, router --> form action
-  // Product.findByIdAndDelete(prodId)
-  //   .then((result) => {
-  //     console.log("DESTROYED PRODUCT");
-  //     res.redirect("/admin/products");
-  //   })
-  //   .catch((err) => console.log(err));
+  Product.findById(prodId)
+    .then((product) => {
+      if (!product) {
+        return next(new Error("Product not found"));
+      }
+      fileHelper.deleteFile(product.imageUrl);
+      return Product.deleteOne({ _id: prodId, userId: req.user._id }); // user id & id --> should match
+    })
 
-  Product.deleteOne({ _id: prodId, userId: req.user._id }) // user id & id --> should match
-    .then(() => {})
+    // productId --> input name , its value --> input value, router --> form action
+    // Product.findByIdAndDelete(prodId)
+    //   .then((result) => {
+    //     console.log("DESTROYED PRODUCT");
+    //     res.redirect("/admin/products");
+    //   })
+    //   .catch((err) => console.log(err));
+
+    .then(() => {
+      res.redirect("/admin/products");
+    })
     .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(error);
     });
 };
-////////6:41
