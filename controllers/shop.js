@@ -48,7 +48,7 @@ exports.getIndex = (req, res, next) => {
     retrieve the info on which page we are 
     which data for which page needs to be displayed
   */
-  const page = req.query.page || 1; // getting page number from query string
+  const page = +req.query.page || 1; // getting page number from query string
   let totalItems;
   // control the amount of data we retrieve from database
 
@@ -71,6 +71,7 @@ exports.getIndex = (req, res, next) => {
         pageTitle: "Shop",
         prods: product,
         totalItems: totalItems,
+        currentPage: page,
         // if the total number of items is greater than the number of items per page 6
         hasNextPage: product.length > 0 && page * ITEMS_PER_PAGE < totalItems,
         hasPreviousPage: page > 1, // if the page number is greater than 1
