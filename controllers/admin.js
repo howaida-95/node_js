@@ -175,9 +175,7 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.postDeleteProduct = (req, res, next) => {
-  /*
-  check if the product created by the logged in user 
-  */
+  /* check if the product created by the logged in user */
   const prodId = req.body.productId;
   Product.findById(prodId)
     .then((product) => {
@@ -197,7 +195,14 @@ exports.postDeleteProduct = (req, res, next) => {
     //   .catch((err) => console.log(err));
 
     .then(() => {
+      // return a new html page (cause reloading html page)
       res.redirect("/admin/products");
+      /* response with server data
+      res.json({ message: "Product deleted" });
+      - delete dom element , we can do that with client js (js running on the browser) & some help by server side
+      this is called ==> asynchronous js request
+      */
+      
     })
     .catch((err) => {
       const error = new Error(err);
