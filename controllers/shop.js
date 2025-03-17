@@ -9,14 +9,40 @@ const ITEMS_PER_PAGE = 2;
 
 // get all products
 exports.getProducts = (req, res, next) => {
-  // fetch products
+  /*
+    retrieve the info on which page we are 
+    which data for which page needs to be displayed
+  */
+  const page = +req.query.page || 1; // getting page number from query string
+  let totalItems;
+  // control the amount of data we retrieve from database
+
   Product.find()
+    .countDocuments()
+    .then((numProducts) => {
+      totalItems = numProducts;
+      return (
+        Product.find()
+          //  page -1 --> previous page number
+          // limit the amount of items we retrieve from database
+          .skip((page - 1) * ITEMS_PER_PAGE)
+          .limit(ITEMS_PER_PAGE)
+      );
+    })
     .then((product) => {
       res.render("shop/product-list", {
         // render the view
         path: "/products",
-        pageTitle: "All Products",
+        pageTitle: "products list",
         prods: product,
+        totalItems: totalItems,
+        currentPage: page,
+        // if the total number of items is greater than the number of items per page 6
+        hasNextPage: product.length > 0 && page * ITEMS_PER_PAGE < totalItems,
+        hasPreviousPage: page > 1, // if the page number is greater than 1
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE), // display highest page number
       });
     })
     .catch((err) => {
