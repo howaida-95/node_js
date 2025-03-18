@@ -174,9 +174,46 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
-exports.postDeleteProduct = (req, res, next) => {
+// exports.postDeleteProduct = (req, res, next) => {
+//   /* check if the product created by the logged in user */
+//   const prodId = req.body.productId;
+//   Product.findById(prodId)
+//     .then((product) => {
+//       if (!product) {
+//         return next(new Error("Product not found"));
+//       }
+//       fileHelper.deleteFile(product.imageUrl);
+//       return Product.deleteOne({ _id: prodId, userId: req.user._id }); // user id & id --> should match
+//     })
+
+//     // productId --> input name , its value --> input value, router --> form action
+//     // Product.findByIdAndDelete(prodId)
+//     //   .then((result) => {
+//     //     console.log("DESTROYED PRODUCT");
+//     //     res.redirect("/admin/products");
+//     //   })
+//     //   .catch((err) => console.log(err));
+
+//     .then(() => {
+//       // return a new html page (cause reloading html page)
+//       res.redirect("/admin/products");
+//       /* response with server data
+//       res.json({ message: "Product deleted" });
+//       - delete dom element , we can do that with client js (js running on the browser) & some help by server side
+//       this is called ==> asynchronous js request
+//       */
+
+//     })
+//     .catch((err) => {
+//       const error = new Error(err);
+//       error.httpStatusCode = 500;
+//       return next(error);
+//     });
+// };
+
+exports.deleteProduct = (req, res, next) => {
   /* check if the product created by the logged in user */
-  const prodId = req.body.productId;
+  const prodId = req.params.productId;
   Product.findById(prodId)
     .then((product) => {
       if (!product) {
@@ -186,27 +223,18 @@ exports.postDeleteProduct = (req, res, next) => {
       return Product.deleteOne({ _id: prodId, userId: req.user._id }); // user id & id --> should match
     })
 
-    // productId --> input name , its value --> input value, router --> form action
-    // Product.findByIdAndDelete(prodId)
-    //   .then((result) => {
-    //     console.log("DESTROYED PRODUCT");
-    //     res.redirect("/admin/products");
-    //   })
-    //   .catch((err) => console.log(err));
-
     .then(() => {
-      // return a new html page (cause reloading html page)
-      res.redirect("/admin/products");
-      /* response with server data
-      res.json({ message: "Product deleted" });
-      - delete dom element , we can do that with client js (js running on the browser) & some help by server side
-      this is called ==> asynchronous js request
+      /*
+      no redirect anymore cause we don't load a new page
+      the response will send json data to the client instead
       */
-      
+      res.status(200).json({
+        message: "Success!",
+      });
     })
     .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
+      res.status(500).json({
+        message: "Deleting product failed.",
+      });
     });
 };

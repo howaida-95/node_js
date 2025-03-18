@@ -37,7 +37,7 @@ router.post(
   isAuth,
   [
     body("title").notEmpty().optional().isString().isLength({ min: 3 }).trim(),
-   // body("imageUrl").isURL(),
+    // body("imageUrl").isURL(),
     body("price").isFloat({ gt: 0 }),
     body("description").notEmpty().optional().isString().isLength({ min: 5, max: 400 }).trim(),
   ],
@@ -58,6 +58,10 @@ router.post(
   ],
   adminController.postEditProduct
 );
-router.post("/delete-product", isAuth, adminController.postDeleteProduct);
+/* 
+delete ==> http method for delete
+delete request has dynamic url parameters
+*/
+router.delete("/product/:productId", isAuth, adminController.deleteProduct);
 
 module.exports = router;
