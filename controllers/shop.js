@@ -208,43 +208,28 @@ exports.postOrder = (req, res, next) => {
     });
 };
 
-// exports.getCheckout = (req, res, next) => {
-//     // render when fetchAll is done
-//     res.render("shop/checkout", { // render the view
-//         path: "/checkout",
-//         pageTitle: "Checkout",
-//     }
-//     );
-// }
+exports.getCheckout = async (req, res, next) => {
+  try {
+    // Await population to ensure data is available
+    const user = await req.user.populate("cart.items.productId");
 
-/*
-        .then(cart => {
-            // with access to the cart -> we have access to products in the cart
-            fetchedCart = cart;
-            return cart.getProducts();
-        })
+    let total = 0;
+    user.cart.items.forEach((item) => {
+      total += item.quantity * item.productId.price;
+    });
 
-                        product.orderItem =
-                        {
-                            quantity: product.cartItem.quantity
-                        };
-                        return product;
-                    }));
-                })
-                .then(order => {
-                    return fetchedCart.setProducts(null)
-                }).then(() => {
-                    res.redirect("/orders")
-                })
-                .catch(err => {
-                    console.log(err)
-                });
-        })
-        .catch(err => {
-            console.log(err)
-        });
-
-*/
+    res.render("shop/checkout", {
+      path: "/checkout",
+      pageTitle: "Checkout",
+      products: user.cart.items,
+      totalSum: total,
+    });
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
+};
 
 // exports.getInvoice = (req, res, next) => {
 //   // order id is encoded in url --> so we use params
