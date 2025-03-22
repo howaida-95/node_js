@@ -15,5 +15,30 @@
             <div class="centered">
                 <h2>Total: $<%= totalSum %></h2>
             </div>
+            <!-- ordered form start (front-side) -->
+            <div class="centered">
+                <form 
+                    action="/create-order"  
+                    method="POST">
+                    <script
+                        src="https://checkout.stripe.com/checkout.js" 
+                        class="stripe-button"
+                        data-key="pk_test_51R46YgQoNVe6lkxRO9ns0n7yWjU1o1m6u4OyMcNOCjyEjp8CB7wAURhAGagrpY3z149HzDKkUexmQGf5ksv8oSgn00uIaMGEJA"
+                        data-amount="<%= totalSum * 100 %>"
+                        data-name="Your Order"
+                        data-description="All the items you ordered"
+                        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                        data-locale="auto"
+                        data-currency="usd">
+                    </script>
+                </form>
+            </div>
+            <!-- ordered form end -->
         </main>
     <%- include('../includes/end.ejs') %>
+<!--
+action="/create-order" ==> target a route in our server to handle the order
+method="POST" ==> send the data to the server
+## the script ==> create the input field for the user 
+## publishable key ==> the key that stripe uses to identify our account &  collect the payment info
+-->

@@ -16,6 +16,9 @@ const csrf = require("csurf");
 const flash = require("connect-flash"); // register or initialized after the session
 const multer = require("multer");
 
+const shopController = require("./controllers/shop");
+const isAuth = require("./middleware/is-auth");
+
 //! ------------------------- imports end -------------------------
 const MONGODB_URI = "mongodb+srv://howaidasayed95:1751995@firstapi.7v1ba.mongodb.net";
 const app = express();
@@ -108,18 +111,6 @@ app.use(
   })
 );
 
-/*
-in any non get request --> invalid csrf token
-as data is changed via post request , so we need to handle it via post request
-so this package will look for the existence of a csrf token in the views 
-
-steps:
-- pass csrf token in the views
-- req.csrfToken() --> method provided by the csrf middleware which added by this package 
-so it will generate a csrf token and pass it to the views
-
-*/
-app.use(csrfProtection);
 // we can use flash middleware across the application
 app.use(flash());
 
@@ -135,7 +126,6 @@ with every request executed, these 2 fields will be available in the views
 */
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
   next();
 });
 
@@ -158,6 +148,24 @@ app.use((req, res, next) => {
       next(new Error(err));
     });
 });
+
+app.use(csrfProtection);
+/*
+in any non get request --> invalid csrf token
+as data is changed via post request , so we need to handle it via post request
+so this package will look for the existence of a csrf token in the views 
+
+steps:
+- pass csrf token in the views
+- req.csrfToken() --> method provided by the csrf middleware which added by this package 
+so it will generate a csrf token and pass it to the views
+*/
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
+app.post("/create-order", isAuth, shopController.postOrder);
 
 // register routes
 app.use("/admin", adminRoutes);

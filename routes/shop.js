@@ -16,7 +16,11 @@ router.post("/cart", isAuth, shopController.postCart);
 router.post("/cart-delete-item", isAuth, shopController.postCartDeleteProduct);
 
 router.get("/checkout", isAuth, shopController.getCheckout);
-router.post("/create-order", isAuth, shopController.postOrder);
+/* create-order-route --> issue of scrf token when we submit the form in the checkout page using stripe
+so we use it in app.js 
+
+*/
+// router.post("/create-order", isAuth, shopController.postOrder);
 router.get("/orders", isAuth, shopController.getOrders);
 // so all authenticated user can see this route
 router.get("/orders/:orderId", isAuth, shopController.getInvoice);
