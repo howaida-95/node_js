@@ -150,7 +150,7 @@ app.use((req, res, next) => {
 });
 
 
-app.post("/create-order", isAuth, shopController.postOrder);
+app.post("/create-checkout-session", isAuth, shopController.createCheckoutSession);
 app.use(csrfProtection);
 /*
 in any non get request --> invalid csrf token

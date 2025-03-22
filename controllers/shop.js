@@ -178,57 +178,87 @@ exports.getOrders = (req, res, next) => {
     });
 };
 
-exports.postOrder = (req, res, next) => {
-  const token = req.body.stripeToken;
-  let totalSum = 0;
-  req.user
-    .populate("cart.items.productId")
-    .then((user) => {
-      // calculate total sum
-      user.cart.items.forEach((p) => {
-        totalSum += p.quantity * p.productId.price;
+exports.createCheckoutSession = async (req, res, next) => {
+  try {
+      const user = req.user;
+      const orders = await Order.find({ "user.userId": user._id });
+
+      const lineItems = orders.map(order => ({
+          price_data: {
+              currency: "usd",
+              product_data: { name: "Your Order" },
+              unit_amount: order.totalPrice * 100, // Convert to cents
+          },
+          quantity: 1,
+      }));
+
+      const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          mode: "payment",
+          line_items: lineItems,
+          success_url: "http://localhost:3000/orders?success=true",
+          cancel_url: "http://localhost:3000/orders?canceled=true",
+          customer_email: user.email,
       });
 
-      const products = user.cart.items.map((i) => {
-        return {
-          quantity: i.quantity,
-          product: { ...i.productId._doc },
-        };
-      });
-      // initialize order
-      const order = new Order({
-        products: products,
-        user: {
-          email: req.user.email,
-          userId: req.user,
-        },
-      });
-      return order.save();
-    })
-    .then((result) => {
-      /* create a charge with stripe
-      -> this will send request to stripe server
-      and charge our payment method 
-      */
-      const charge = stripe.charges.create({
-        amount: totalSum * 100,
-        currency: "usd",
-        description: "Demo Order",
-        source: token,
-        metadata: { order_id: result._id.toString() },
-      });
-
-      return req.user.clearCart();
-    })
-    .then((result) => {
-      res.redirect("/orders");
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
+      res.json({ id: session.id });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+  }
 };
+
+// exports.postOrder = (req, res, next) => {
+//   const token = req.body.stripeToken;
+//   let totalSum = 0;
+//   req.user
+//     .populate("cart.items.productId")
+//     .then((user) => {
+//       // calculate total sum
+//       user.cart.items.forEach((p) => {
+//         totalSum += p.quantity * p.productId.price;
+//       });
+
+//       const products = user.cart.items.map((i) => {
+//         return {
+//           quantity: i.quantity,
+//           product: { ...i.productId._doc },
+//         };
+//       });
+//       // initialize order
+//       const order = new Order({
+//         products: products,
+//         user: {
+//           email: req.user.email,
+//           userId: req.user,
+//         },
+//       });
+//       return order.save();
+//     })
+//     .then((result) => {
+//       /* create a charge with stripe
+//       -> this will send request to stripe server
+//       and charge our payment method 
+//       */
+//       const charge = stripe.charges.create({
+//         amount: totalSum * 100,
+//         currency: "usd",
+//         description: "Demo Order",
+//         source: token,
+//         metadata: { order_id: result._id.toString() },
+//       });
+
+//       return req.user.clearCart();
+//     })
+//     .then((result) => {
+//       res.redirect("/orders");
+//     })
+//     .catch((err) => {
+//       const error = new Error(err);
+//       error.httpStatusCode = 500;
+//       return next(error);
+//     });
+// };
 
 exports.getCheckout = async (req, res, next) => {
   try {
