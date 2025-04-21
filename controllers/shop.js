@@ -4,9 +4,7 @@ const Order = require("../models/order");
 const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
-const stripe = require("stripe")(
-  "sk_test_51R46YgQoNVe6lkxRHqtJKlXSa3gMRj0LcMeVvZCqGATwUJh6fntciexILYgSzyHUxOYRBfdfmFcUV3XpWznuzdU000CQ6maS6b"
-);
+const stripe = require("stripe")(process.env.STRIPE_KEY); // stripe secret key
 
 const ITEMS_PER_PAGE = 2;
 

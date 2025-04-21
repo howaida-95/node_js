@@ -20,7 +20,7 @@ const shopController = require("./controllers/shop");
 const isAuth = require("./middleware/is-auth");
 
 //! ------------------------- imports end -------------------------
-const MONGODB_URI = "mongodb+srv://howaidasayed95:1751995@firstapi.7v1ba.mongodb.net";
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}: ${process.env.MONGO_PASSWORD}@firstapi.7v1ba.mongodb.net/${process.env.MONGO_DEFAULT_DATA}`;
 const app = express();
 
 // execute mongodb store as a constructor
@@ -149,7 +149,6 @@ app.use((req, res, next) => {
     });
 });
 
-
 app.post("/create-order", isAuth, shopController.postOrder);
 app.use(csrfProtection);
 /*
@@ -192,7 +191,9 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000, () => {
+      console.log("Server is running on port 3000");
+    });
   })
   .catch((err) => {
     console.log(err);

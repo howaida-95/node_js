@@ -21,3 +21,13 @@ files shouldn't stored in database they are too big
 it's too inefficient to store them in a database & query them from there 
 store a file on a file system 
 we store the path to the file in database 
+========================================================
+=> env variable 
+concept supported by node js where we can pass certain configuration & values into node app 
+from outside 
+the values will be injected when node starts 
+& this allows us to use different values in dev & production 
+ex:
+1- connection string to connect with mongoose cluster 
+2- port (server or host provider set the port)
+3- stripe api key (for payment)
