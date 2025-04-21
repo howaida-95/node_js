@@ -1,8 +1,10 @@
 //! ------------------------- imports start --------------------
+const https = require("https"); // https module
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 const path = require("path");
+const fs = require("fs"); // file system module
 const express = require("express");
 const bodyParser = require("body-parser");
 
@@ -17,6 +19,7 @@ const flash = require("connect-flash"); // register or initialized after the ses
 const multer = require("multer");
 const helmet = require("helmet"); // security middleware
 const compression = require("compression"); // compress the response body
+const morgan = require("morgan"); // logging middleware
 const shopController = require("./controllers/shop");
 const isAuth = require("./middleware/is-auth");
 
@@ -152,6 +155,13 @@ app.use((req, res, next) => {
 
 app.post("/create-order", isAuth, shopController.postOrder);
 app.use(csrfProtection);
+
+/*
+reading file synchronously, it will block the execution until the file is read
+*/
+const privateKey = fs.readFileSync("server.key"); // private key for https
+const certificate = fs.readFileSync("server.cert"); // certificate for https
+
 /*
 in any non get request --> invalid csrf token
 as data is changed via post request , so we need to handle it via post request
@@ -172,8 +182,12 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+// write the logs to a file
+const accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: "a" });
+// write logs to a file
 app.use(helmet()); // security middleware
 app.use(compression()); // compress the response body
+app.use(morgan("combined", { stream: accessLogStream })); // logging middleware
 
 app.get("/500", errorController.get500);
 // for every middleware not handled ahead of time , it will be handled by this middleware
@@ -198,6 +212,14 @@ mongoose
     app.listen(process.env.PORT || 3000, () => {
       console.log("Server is running on port 3000");
     });
+    /*
+      createServer(arg1, arg2)
+      arg1: options object (key, certificate)
+      arg2: callback function
+    */
+    // https.createServer({ key: privateKey, certificate: certificate }, app).listen(process.env.PORT || 3000, () => {
+    //   console.log("Server is running on port 3000");
+    // });
   })
   .catch((err) => {
     console.log(err);

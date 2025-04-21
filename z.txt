@@ -36,3 +36,25 @@ ex:
 => node helmet(security middleware)
 add certain headers to the responses & it follow best practices 
 => compressing assets (compression package)
+=> setting up req logging (morgan package)
+=> SSL & TLS 
+both for securing data sent from client to server 
+we exchange data between client & server 
+attacker --> eavesdropping data (can read data sent from client to server)
+protecting data using --> 
+SSL & TLS by encrypting the data during transmission, 
+ensuring that even if intercepted, the data remains unreadable to unauthorized parties.
+then it will be decrypted on the server 
+to decrypt it we use ==>  public key , private key pair 
+public key --> not sth we have to protect 
+private key --> must be kept secure and confidential only known for server used for decrypt data 
+
+in ssl certificate --> 
+bind public key to the identity of the server (ex: domain, admin email address ... )
+we set these data when create the certificate
+so ssl certificate connects the public key with the server's identity & the client, 
+ensuring that users can trust the server they are communicating with.
+using public key by client --> encrypting data sended to the server 
+decrypt data by private key 
+https://slproweb.com/products/Win32OpenSSL.html 
+openssl req -nodes -new -x509 -keyout server.key -out server.cert 
