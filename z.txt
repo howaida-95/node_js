@@ -35,3 +35,4 @@ ex:
 => replace test key with production key 
 => node helmet(security middleware)
 add certain headers to the responses & it follow best practices 
+=> compressing assets (compression package)

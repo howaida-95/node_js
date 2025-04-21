@@ -16,11 +16,12 @@ const csrf = require("csurf");
 const flash = require("connect-flash"); // register or initialized after the session
 const multer = require("multer");
 const helmet = require("helmet"); // security middleware
+const compression = require("compression"); // compress the response body
 const shopController = require("./controllers/shop");
 const isAuth = require("./middleware/is-auth");
 
 //! ------------------------- imports end -------------------------
-const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}: ${process.env.MONGO_PASSWORD}@firstapi.7v1ba.mongodb.net/${process.env.MONGO_DEFAULT_DATA}`;
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@firstapi.7v1ba.mongodb.net/${process.env.MONGO_DEFAULT_DATA}`;
 const app = express();
 
 // execute mongodb store as a constructor
@@ -172,6 +173,8 @@ app.use(shopRoutes);
 app.use(authRoutes);
 
 app.use(helmet()); // security middleware
+app.use(compression()); // compress the response body
+
 app.get("/500", errorController.get500);
 // for every middleware not handled ahead of time , it will be handled by this middleware
 // not a technical error object
