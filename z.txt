@@ -31,3 +31,7 @@ ex:
 1- connection string to connect with mongoose cluster 
 2- port (server or host provider set the port)
 3- stripe api key (for payment)
+
+=> replace test key with production key 
+=> node helmet(security middleware)
+add certain headers to the responses & it follow best practices 

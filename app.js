@@ -15,7 +15,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash"); // register or initialized after the session
 const multer = require("multer");
-
+const helmet = require("helmet"); // security middleware
 const shopController = require("./controllers/shop");
 const isAuth = require("./middleware/is-auth");
 
@@ -171,6 +171,7 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.use(helmet()); // security middleware
 app.get("/500", errorController.get500);
 // for every middleware not handled ahead of time , it will be handled by this middleware
 // not a technical error object
